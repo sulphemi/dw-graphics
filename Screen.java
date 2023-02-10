@@ -36,14 +36,26 @@ public class Screen {
 
     /*=============================
       PUT YOUR LINE ALGORITHM CODE HERE
-      ===========================*/    
+      ===========================*/
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
+    int A = y1 - y0;
+    int B = x0 - x1;
 
+    int d = A * 2 + B;
+    int currentY = y0;
+    for (int i = x0; i < x1; i++) {
+      plot(c, i, currentY);
+      if (d > 0) {
+        currentY++;
+        d += B * 2;
+      }
+      d += A * 2;
+    }
   }//drawLine
 
 
 
-    
+
   public void plot(Color c, int x, int y) {
     int newy = width - 1 - y;
     if (x >= 0 && x < width && newy >= 0 && newy < height) {
