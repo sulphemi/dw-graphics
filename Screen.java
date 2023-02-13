@@ -38,6 +38,7 @@ public class Screen {
       PUT YOUR LINE ALGORITHM CODE HERE
       ===========================*/
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
+    /*
     int A = y1 - y0;
     int B = x0 - x1;
 
@@ -50,6 +51,20 @@ public class Screen {
         d += B * 2;
       }
       d += A * 2;
+    }*/
+
+    int A = y1 - y0;
+    int B = x0 - x1;
+
+    int d = A + B * 2;
+    int currentX = x0;
+    for (int i = y0; i < y1; i++) {
+      plot(c, currentX, i);
+      if (d < 0) {
+        currentX++;
+        d += A * 2;
+      }
+      d += B * 2;
     }
   }//drawLine
 
