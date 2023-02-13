@@ -38,33 +38,36 @@ public class Screen {
       PUT YOUR LINE ALGORITHM CODE HERE
       ===========================*/
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
-    /*
-    int A = y1 - y0;
-    int B = x0 - x1;
+    if (y1 - y0 > x1 - x0) {
+      //top-heavy slope
+      int A = y1 - y0;
+      int B = x0 - x1;
 
-    int d = A * 2 + B;
-    int currentY = y0;
-    for (int i = x0; i < x1; i++) {
-      plot(c, i, currentY);
-      if (d > 0) {
-        currentY++;
+      int d = A + B * 2;
+      int currentX = x0;
+      for (int i = y0; i < y1; i++) {
+        plot(c, currentX, i);
+        if (d < 0) {
+          currentX++;
+          d += A * 2;
+        }
         d += B * 2;
       }
-      d += A * 2;
-    }*/
+    } else {
+      //bottom-heavy slope
+      int A = y1 - y0;
+      int B = x0 - x1;
 
-    int A = y1 - y0;
-    int B = x0 - x1;
-
-    int d = A + B * 2;
-    int currentX = x0;
-    for (int i = y0; i < y1; i++) {
-      plot(c, currentX, i);
-      if (d < 0) {
-        currentX++;
+      int d = A * 2 + B;
+      int currentY = y0;
+      for (int i = x0; i < x1; i++) {
+        plot(c, i, currentY);
+        if (d > 0) {
+          currentY++;
+          d += B * 2;
+        }
         d += A * 2;
       }
-      d += B * 2;
     }
   }//drawLine
 
