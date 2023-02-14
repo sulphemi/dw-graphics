@@ -38,8 +38,18 @@ public class Screen {
       PUT YOUR LINE ALGORITHM CODE HERE
       ===========================*/
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
-    if (y1 - y0 > x1 - x0) {
+    if (Math.abs(y1 - y0) > Math.abs(x1 - x0)) {
       //top-heavy slope
+
+      if (y0 > y1) {
+        int xtemp = x0;
+        x0 = x1;
+        x1 = xtemp;
+        int ytemp = y0;
+        y0 = y1;
+        y1 = ytemp;
+      }
+
       int A = y1 - y0;
       int B = x0 - x1;
 
@@ -47,14 +57,35 @@ public class Screen {
       int currentX = x0;
       for (int i = y0; i < y1; i++) {
         plot(c, currentX, i);
-        if (d < 0) {
-          currentX++;
-          d += A * 2;
+        if (x1 >= x0) {
+          if (d < 0) {
+            currentX++;
+            d += A * 2;
+          }
+        } else {
+          if (false && d > 0) {
+            currentX--;
+            d += A * 2;
+          }
         }
         d += B * 2;
       }
+
+      if (currentX != x1) {
+        System.out.println(c + "didnt draw correctly");
+      }
     } else {
       //bottom-heavy slope
+
+      if (x0 > x1) {
+        int xtemp = x0;
+        x0 = x1;
+        x1 = xtemp;
+        int ytemp = y0;
+        y0 = y1;
+        y1 = ytemp;
+      }
+
       int A = y1 - y0;
       int B = x0 - x1;
 
@@ -62,11 +93,23 @@ public class Screen {
       int currentY = y0;
       for (int i = x0; i < x1; i++) {
         plot(c, i, currentY);
-        if (d > 0) {
-          currentY++;
-          d += B * 2;
+        if (y1 >= y0) {
+          if (d > 0) {
+            currentY++;
+            d += B * 2;
+          }
+        } else {
+          if (d < 0) {
+            currentY--;
+            d += B * 2;
+          }
         }
+
         d += A * 2;
+      }
+
+      if (currentY != y1) {
+        System.out.println(c + "didnt draw correctly");
       }
     }
   }//drawLine
