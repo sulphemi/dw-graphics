@@ -38,6 +38,7 @@ public class Screen {
       PUT YOUR LINE ALGORITHM CODE HERE
       ===========================*/
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
+    System.out.println("drawing " + x0 + " " + y0 + " " + x1 + " " + y1);
     if (Math.abs(y1 - y0) > Math.abs(x1 - x0)) {
       //top-heavy slope
 
@@ -58,12 +59,14 @@ public class Screen {
       for (int i = y0; i < y1; i++) {
         plot(c, currentX, i);
         if (x1 >= x0) {
+          //positive slope
           if (d < 0) {
             currentX++;
             d += A * 2;
           }
         } else {
-          if (false && d > 0) {
+          //negative slope
+          if (d > 0) {
             currentX--;
             d += A * 2;
           }
@@ -94,11 +97,13 @@ public class Screen {
       for (int i = x0; i < x1; i++) {
         plot(c, i, currentY);
         if (y1 >= y0) {
+          //positive slope
           if (d > 0) {
             currentY++;
             d += B * 2;
           }
         } else {
+          //negative slope
           if (d < 0) {
             currentY--;
             d += B * 2;
