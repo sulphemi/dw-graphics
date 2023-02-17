@@ -6,7 +6,7 @@ public class Matrix {
   protected ArrayList<double []>m;
 
   Matrix() {
-    m = new ArrayList<double []>();
+    m = new ArrayList<double []>(POINT_SIZE);
   }//constructor
 
   /*======== void addColumn() ==========
@@ -15,10 +15,13 @@ public class Matrix {
     Adds point (x, y, z) to the calling object.
     ====================*/
   public void addColumn(double x, double y, double z) {
-  }//addColumn
+    assert POINT_SIZE == 4;
+    double[] column = {x, y, z, 1};
+    m.add(column);
+  }
 
   /*======== void ident() ==========
-    Inputs: 
+    Inputs:
     Returns:
     Turn the calling object into a 4x4 identity matrix
     ====================*/
@@ -34,19 +37,26 @@ public class Matrix {
   public void mult(Matrix a) {
   }//mult
 
-    
+
   public void clear() {
     m = new ArrayList<double[] >();
   }//clear
 
-    
+
   /*======== void toString() ==========
     Inputs:
     Returns: A String representation of the matrix
-   ====================*/  
+   ====================*/
   public String toString() {
-
     String s = "";
+
+    for (int i = 0; i < POINT_SIZE; i++) {
+      for (double[] d : m) {
+        s += d[i];
+        s += ' ';
+      }
+      s += '\n';
+    }
 
     return s;
   }
