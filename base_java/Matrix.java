@@ -26,6 +26,11 @@ public class Matrix {
     Turn the calling object into a 4x4 identity matrix
     ====================*/
   public void ident() {
+    clear();
+    addColumn(1, 0, 0, 0);
+    addColumn(0, 1, 0, 0);
+    addColumn(0, 0, 1, 0);
+    addColumn(0, 0, 0, 1);
   }//ident
 
   /*======== void mult() ==========
