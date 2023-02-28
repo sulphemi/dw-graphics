@@ -9,6 +9,11 @@ public class Matrix {
     m = new ArrayList<double []>(POINT_SIZE);
   }//constructor
 
+  private void addColumn(double a, double b, double c, double d) {
+    double[] column = {a, b, c, d};
+    m.add(column);
+  }
+
   /*======== void addColumn() ==========
     Inputs: double x, double y, double z
     Returns:
@@ -16,8 +21,7 @@ public class Matrix {
     ====================*/
   public void addColumn(double x, double y, double z) {
     assert POINT_SIZE == 4;
-    double[] column = {x, y, z, 1};
-    m.add(column);
+    addColumn(x, y, z, 1);
   }
 
   /*======== void ident() ==========
@@ -26,6 +30,7 @@ public class Matrix {
     Turn the calling object into a 4x4 identity matrix
     ====================*/
   public void ident() {
+    assert POINT_SIZE == 4;
     clear();
     addColumn(1, 0, 0, 0);
     addColumn(0, 1, 0, 0);
