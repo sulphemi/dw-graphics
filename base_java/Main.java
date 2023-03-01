@@ -9,6 +9,7 @@ public class Main {
     Screen s = new Screen();
     EdgeMatrix edges = new EdgeMatrix();
 
+/*
     Matrix m2 = new Matrix();
     m2.addColumn(1, 2, 3);
     m2.addColumn(4, 5, 6);
@@ -30,6 +31,9 @@ public class Main {
 
     m2.mult(m1);
     System.out.println(m2);
+    */
+
+    Matrix.main(null);
 
     edges.addEdge(50, 450, 0, 100, 450, 0);
     edges.addEdge(50, 450, 0, 50, 400, 0);

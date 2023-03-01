@@ -44,12 +44,24 @@ public class Matrix {
     multiply the calling matrix by a, modifying the
     calling matrix to be the product
    ====================*/
-  public void mult(Matrix a) {
+  public void _mult(Matrix a) {
     ArrayList<double[]> res = new ArrayList<double[]>();
     for (int i = 0; i < a.m.size(); i++) {
       double[] col = new double[POINT_SIZE];
       for (int j = 0; j < col.length; j++) {
-        col[j] = mult(a.getRow(j), getCol(i));
+        col[j] = xsum(a.getRow(j), getCol(i));
+      }
+      res.add(col);
+    }
+    m = res;
+  }//mult
+
+  public void mult(Matrix a) {
+    ArrayList<double[]> res = new ArrayList<double[]>();
+    for (int i = 0; i < m.size(); i++) {
+      double[] col = new double[POINT_SIZE];
+      for (int j = 0; j < col.length; j++) {
+        col[j] = xsum(getRow(j), a.getCol(i));
       }
       res.add(col);
     }
@@ -57,7 +69,7 @@ public class Matrix {
   }//mult
 
   //given {a, b, c, d} and {1, 2, 3, 4} return 1a+2b+3c+4d
-  private static double mult(double[] a, double[] b) {
+  private static double xsum(double[] a, double[] b) {
     assert a.length == b.length;
     double res = 0;
     for (int i = 0; i < a.length; i++) {
@@ -106,7 +118,7 @@ public class Matrix {
     System.out.println("make matrix:");
     Matrix owo = new Matrix();
     owo.addColumn(1, 2, 3);
-    owo.addColumn(5, 6, 7);
+    owo.addColumn(4, 5, 6);
     System.out.println(owo);
     System.out.println();
 
@@ -123,8 +135,21 @@ public class Matrix {
     System.out.println();
 
     System.out.println("multiply by identity matrix");
-    id.mult(owo);
-    System.out.println(id);
-  }
+    owo.mult(id);
+    System.out.println(owo);
+    System.out.println();
 
+    System.out.println("multiply two matrices");
+    Matrix a = new Matrix();
+    Matrix b = new Matrix();
+    a.addColumn(1, 2, 3, 4);
+    a.addColumn(5, 6, 7, 8);
+    a.addColumn(9, 10, 11, 12);
+    b.addColumn(20, 6, 9, 4);
+    b.addColumn(5, 4, 3, 2);
+    b.addColumn(20, 19, 18, 16);
+    b.addColumn(4, 3, 2, 1);
+    a.mult(b);
+    System.out.println(a);
+  }
 }//Matrix
