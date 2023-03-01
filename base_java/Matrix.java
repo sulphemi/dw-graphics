@@ -6,7 +6,7 @@ public class Matrix {
   protected ArrayList<double []>m;
 
   Matrix() {
-    m = new ArrayList<double []>(POINT_SIZE);
+    m = new ArrayList<double []>();
   }//constructor
 
   private void addColumn(double a, double b, double c, double d) {
@@ -45,8 +45,26 @@ public class Matrix {
     calling matrix to be the product
    ====================*/
   public void mult(Matrix a) {
-    assert n_columns() == a.n_columns();
+    ArrayList<double[]> res = new ArrayList<double[]>();
+    for (int i = 0; i < a.m.size(); i++) {
+      double[] col = new double[POINT_SIZE];
+      for (int j = 0; j < col.length; j++) {
+        col[j] = mult(a.getRow(j), getCol(i));
+      }
+      res.add(col);
+    }
+    m = res;
   }//mult
+
+  //given {a, b, c, d} and {1, 2, 3, 4} return 1a+2b+3c+4d
+  private static double mult(double[] a, double[] b) {
+    assert a.length == b.length;
+    double res = 0;
+    for (int i = 0; i < a.length; i++) {
+      res += a[i] * b[i];
+    }
+    return res;
+  }
 
 
   public void clear() {
@@ -84,10 +102,6 @@ public class Matrix {
     return d;
   }
 
-  public int n_columns() {
-    return m.size();
-  }
-
   public static void main(String[] args) {
     System.out.println("make matrix:");
     Matrix owo = new Matrix();
@@ -105,6 +119,11 @@ public class Matrix {
     System.out.println("ident");
     Matrix id = new Matrix();
     id.ident();
+    System.out.println(id);
+    System.out.println();
+
+    System.out.println("multiply by identity matrix");
+    id.mult(owo);
     System.out.println(id);
   }
 
