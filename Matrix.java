@@ -57,6 +57,10 @@ public class Matrix {
     translation offsets.
     ====================*/
   private void makeTranslate(double x, double y, double z){
+    addColumn(new int[] {1, 0, 0, 0});
+    addColumn(new int[] {0, 1, 0, 0});
+    addColumn(new int[] {0, 0, 1, 0});
+    addColumn(new int[] {x, y, z, 1});
   }//makeTranslate
 
   /*======== void makeScale() ==========
@@ -67,6 +71,10 @@ public class Matrix {
     scale factors.
     ====================*/
   private void makeScale(double x, double y, double z) {
+    addColumn(new int[] {x, 0, 0, 0});
+    addColumn(new int[] {0, y, 0, 0});
+    addColumn(new int[] {0, 0, z, 0});
+    addColumn(new int[] {0, 0, 0, 1});
   }//makeScale
 
   /*======== void  makeRotX() ==========
