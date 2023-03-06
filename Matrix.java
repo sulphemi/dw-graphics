@@ -37,7 +37,7 @@ public class Matrix {
     else if (transformType == SCALE)
       makeScale(x, y, z);
   }
-  Matrix(int transformType, double theta, char axis) {
+  Matrix(int transformType, char axis, double theta) {
     ident();
     if (transformType == ROTATE) {
       if (axis == 'X')
