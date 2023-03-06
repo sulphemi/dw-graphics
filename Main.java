@@ -71,9 +71,22 @@ public class Main {
     Matrix tmp;
 
     while (input.hasNext()) {
-      command = input.next();
+      command = input.nextLine();
       System.out.println(command);
 
+      switch (command) {
+        case "line":
+          edges.addColumn(input.nextInt(), input.nextInt(), input.nextInt());
+          edges.addColumn(input.nextInt(), input.nextInt(), input.nextInt());
+          break;
+        case "display":
+          s.display();
+          break;
+        case "":
+          break;
+        default:
+          throw new Exception("waaa command " + command + " not found");
+      }
     }//read loop
   }//gfxParse
 
