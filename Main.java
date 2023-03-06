@@ -68,7 +68,7 @@ public class Main {
     double[] zvals = new double[3];
     double theta;
     char axis;
-    Matrix tmp;
+    Matrix tmp = null;
 
     while (input.hasNext()) {
       command = input.nextLine();
@@ -82,10 +82,30 @@ public class Main {
         case "display":
           s.display();
           break;
+        case "ident":
+          transform.ident();
+          break;
+        case "move":
+          tmp = new Matrix(Matrix.TRANSLATE, input.nextInt(), input.nextInt(), input.nextInt());
+          transform.mult(tmp);
+          break;
+        case "scale":
+          tmp = new Matrix(Matrix.SCALE, input.nextInt(), input.nextInt(), input.nextInt());
+          transform.mult(tmp);
+          break;
+        case "rotate":
+          tmp = new Matrix(Matrix.ROTATE, input.next().charAt(0), input.nextInt());
+        case "apply":
+          if (tmp != null) tmp.mult(edges);
+          break;
+        case "save":
+          s.saveExtension(input.nextLine());
+          break;
         case "":
+          //scanner left an empty line for us
           break;
         default:
-          throw new Exception("waaa command " + command + " not found");
+          throw new IllegalArgumentException("waaa command " + command + " not found");
       }
     }//read loop
   }//gfxParse
