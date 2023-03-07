@@ -87,6 +87,7 @@ public class Matrix {
     and x as the axis of rotation.
     ====================*/
   private void makeRotX(double theta) {
+    
   }//makeRotX
 
   /*======== void  makeRotY() ==========
@@ -97,6 +98,10 @@ public class Matrix {
     and y as the axis of rotation.
     ====================*/
   private void makeRotY(double theta) {
+    m.add(new double[] {});
+    m.add(new double[] {});
+    m.add(new double[] {});
+    m.add(new double[] {});
   }//makeRotY
 
   /*======== void  makeRotZ() ==========
@@ -107,6 +112,10 @@ public class Matrix {
     and z as the axis of rotation.
     ====================*/
   private void makeRotZ(double theta) {
+    m.add(new double[] {Math.cos(theta), -1 * Math.sin(theta), 0, 0});
+    m.add(new double[] {Math.sin(theta), Math.cos(theta), 0, 0});
+    m.add(new double[] {0, 0, 1, 0});
+    m.add(new double[] {0, 0, 0, 1});
   }//makeRotZ
 
 
