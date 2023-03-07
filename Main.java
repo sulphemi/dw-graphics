@@ -80,6 +80,7 @@ public class Main {
           edges.addColumn(input.nextInt(), input.nextInt(), input.nextInt());
           break;
         case "display":
+          edges.drawEdges(s, new Color(255, 255, 255));
           s.display();
           break;
         case "ident":
@@ -95,8 +96,12 @@ public class Main {
           break;
         case "rotate":
           tmp = new Matrix(Matrix.ROTATE, input.next().charAt(0), input.nextInt());
+          transform.mult(tmp);
+          break;
         case "apply":
-          if (tmp != null) tmp.mult(edges);
+          System.out.println("applying:\n" + transform);
+          edges.mult(transform);
+          transform.ident();
           break;
         case "save":
           s.saveExtension(input.nextLine());
@@ -107,6 +112,9 @@ public class Main {
         default:
           throw new IllegalArgumentException("waaa command " + command + " not found");
       }
+      //System.out.println(command);
+      System.out.println("t:\n" + tmp);
+      System.out.println("m:\n" + edges);
     }//read loop
   }//gfxParse
 

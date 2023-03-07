@@ -31,14 +31,16 @@ public class Matrix {
     "make" methods below.
     ================================================*/
   Matrix(int transformType, double x, double y, double z) {
-    ident();
+    this();
+    //ident();
     if (transformType == TRANSLATE)
       makeTranslate(x, y, z);
     else if (transformType == SCALE)
       makeScale(x, y, z);
   }
   Matrix(int transformType, char axis, double theta) {
-    ident();
+    this();
+    //ident();
     if (transformType == ROTATE) {
       if (axis == 'X')
         makeRotX(theta);
@@ -146,7 +148,7 @@ public class Matrix {
     m = new ArrayList<double[] >();
   }//clear
 
-  public String toString() {
+  public String _toString() {
 
     String s = "";
     if (m.size() == 0) {
@@ -161,4 +163,27 @@ public class Matrix {
     }
     return s;
   }
+
+  public String toString() {
+
+    String s = "";
+    if (m.size() == 0) {
+      return s;
+    }
+
+    for (int i=0; i<POINT_SIZE; i++) {
+      for (double[] p : m) {
+        s+= pad(p[i]) + " ";
+      }
+      s+= "\n";
+    }
+    return s;
+  }
+
+  private static String pad(double n) {
+    String s;
+    for (s = ""+n; s.length()<6; s=" "+s);
+    return s;
+  }
+
 }//Matrix
