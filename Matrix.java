@@ -41,6 +41,7 @@ public class Matrix {
   Matrix(int transformType, char axis, double theta) {
     this();
     //ident();
+    theta = Math.toRadians(theta);
     if (transformType == ROTATE) {
       if (axis == 'X')
         makeRotX(theta);
@@ -48,6 +49,10 @@ public class Matrix {
         makeRotY(theta);
       else if (axis == 'Z')
         makeRotZ(theta);
+      else {
+        ident();
+        System.out.println("not a rotation option: " + axis);
+      }
     }
   }
 
@@ -87,7 +92,10 @@ public class Matrix {
     and x as the axis of rotation.
     ====================*/
   private void makeRotX(double theta) {
-    
+    m.add(new double[] {1, 0, 0, 0});
+    m.add(new double[] {0, Math.cos(theta), -1 * Math.sin(theta), 0});
+    m.add(new double[] {0, Math.sin(theta), Math.cos(theta), 0});
+    m.add(new double[] {0, 0, 0, 1});
   }//makeRotX
 
   /*======== void  makeRotY() ==========
@@ -98,10 +106,10 @@ public class Matrix {
     and y as the axis of rotation.
     ====================*/
   private void makeRotY(double theta) {
-    m.add(new double[] {});
-    m.add(new double[] {});
-    m.add(new double[] {});
-    m.add(new double[] {});
+    m.add(new double[] {Math.cos(theta), 0, Math.sin(theta), 0});
+    m.add(new double[] {0, 1, 0, 0});
+    m.add(new double[] {-1 * Math.sin(theta), 0, Math.cos(theta), 0});
+    m.add(new double[] {0, 0, 0, 1});
   }//makeRotY
 
   /*======== void  makeRotZ() ==========

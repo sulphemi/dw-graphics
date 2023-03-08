@@ -72,7 +72,7 @@ public class Main {
 
     while (input.hasNext()) {
       command = input.nextLine();
-      System.out.println(command);
+      //System.out.println(command);
 
       switch (command) {
         case "line":
@@ -80,6 +80,7 @@ public class Main {
           edges.addColumn(input.nextInt(), input.nextInt(), input.nextInt());
           break;
         case "display":
+          s.clearScreen();
           edges.drawEdges(s, new Color(255, 255, 255));
           s.display();
           break;
@@ -95,11 +96,10 @@ public class Main {
           transform.mult(tmp);
           break;
         case "rotate":
-          tmp = new Matrix(Matrix.ROTATE, input.next().charAt(0), input.nextInt());
+          tmp = new Matrix(Matrix.ROTATE, input.next().toUpperCase().charAt(0), input.nextInt());
           transform.mult(tmp);
           break;
         case "apply":
-          System.out.println("applying:\n" + transform);
           edges.mult(transform);
           transform.ident();
           break;
@@ -113,8 +113,8 @@ public class Main {
           throw new IllegalArgumentException("waaa command " + command + " not found");
       }
       //System.out.println(command);
-      System.out.println("t:\n" + tmp);
-      System.out.println("m:\n" + edges);
+      //System.out.println("t:\n" + tmp);
+      //System.out.println("m:\n" + edges);
     }//read loop
   }//gfxParse
 
