@@ -76,8 +76,8 @@ public class Main {
 
       switch (command) {
         case "line":
-          edges.addColumn(input.nextInt(), input.nextInt(), input.nextInt());
-          edges.addColumn(input.nextInt(), input.nextInt(), input.nextInt());
+          edges.addColumn(input.nextDouble(), input.nextDouble(), input.nextDouble());
+          edges.addColumn(input.nextDouble(), input.nextDouble(), input.nextDouble());
           break;
         case "display":
           s.clearScreen();
@@ -88,15 +88,15 @@ public class Main {
           transform.ident();
           break;
         case "move":
-          tmp = new Matrix(Matrix.TRANSLATE, input.nextInt(), input.nextInt(), input.nextInt());
+          tmp = new Matrix(Matrix.TRANSLATE, input.nextDouble(), input.nextDouble(), input.nextDouble());
           transform.mult(tmp);
           break;
         case "scale":
-          tmp = new Matrix(Matrix.SCALE, input.nextInt(), input.nextInt(), input.nextInt());
+          tmp = new Matrix(Matrix.SCALE, input.nextDouble(), input.nextDouble(), input.nextDouble());
           transform.mult(tmp);
           break;
         case "rotate":
-          tmp = new Matrix(Matrix.ROTATE, input.next().toUpperCase().charAt(0), input.nextInt());
+          tmp = new Matrix(Matrix.ROTATE, input.next().toUpperCase().charAt(0), input.nextDouble());
           transform.mult(tmp);
           break;
         case "apply":
