@@ -96,6 +96,14 @@ public class Main {
         s.saveExtension(command);
       }//save
 
+      else if (command.equals("hermite")) {
+        
+      }
+
+      else if (command.equals("bezier")) {
+
+      }
+
       else if (command.startsWith("#")) {
         //c'est un comment
       }

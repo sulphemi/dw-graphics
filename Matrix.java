@@ -2,12 +2,12 @@ import java.util.*;
 
 public class Matrix {
 
-  public static int POINT_SIZE = 4;
-  public static int TRANSLATE = 0;
-  public static int SCALE = 1;
-  public static int ROTATE = 2;
-  public static int HERMITE = 3;
-  public static int BEZIER = 4;
+  public static final int POINT_SIZE = 4;
+  public static final int TRANSLATE = 0;
+  public static final int SCALE = 1;
+  public static final int ROTATE = 2;
+  public static final int HERMITE = 3;
+  public static final int BEZIER = 4;
 
   protected ArrayList<double []>m;
 
@@ -27,7 +27,7 @@ public class Matrix {
   Inputs:   double p1, double p2,
             double p3, double p4
             int type
-	    
+
   Constructs a matrix containing the values for a, b, c and d of the
   equation at^3 + bt^2 + ct + d for the curve defined by p1, p2, p3 and p4.
 
@@ -35,15 +35,28 @@ public class Matrix {
   ====================*/
   Matrix(int curveType, double p0, double p1, double p2, double p3) {
     this();
+    m.add(new double[] {});
+    m.add(new double[] {});
+
   }//coefiecient constructor
 
     /*======== curve type constructor ==========
       Creates a 4x4 Matrix that can be used in the curve
       coeficient constructor. curveType is one of the constants
       defined above.
-      ====================*/    
+      ====================*/
   Matrix(int curveType) {
     this();
+    switch (curveType) {
+      case HERMITE:
+
+        break;
+      case BEZIER:
+
+        break;
+      default:
+        throw new RuntimeException("aaaaaaa");
+    }
   }//translate/scale constructor
 
   Matrix(int transformType, double theta, char axis) {
