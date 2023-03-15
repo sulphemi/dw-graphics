@@ -96,6 +96,10 @@ public class Main {
         s.saveExtension(command);
       }//save
 
+      else if (command.startsWith("#")) {
+        //c'est un comment
+      }
+
       else {
         System.out.println("invalid command: " + command);
       }
