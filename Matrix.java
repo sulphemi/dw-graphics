@@ -33,11 +33,12 @@ public class Matrix {
 
   Type determines whether the curve is bezier or hermite.
   ====================*/
-  Matrix(int curveType, double p0, double p1, double p2, double p3) {
+  Matrix(int curveType, double x0, double y0, double x1, double y1, double m0, double n0, double m1, double n1) {
     this();
-    m.add(new double[] {});
-    m.add(new double[] {});
-
+    m.add(new double[] {x0, x1, m0, n0});
+    m.add(new double[] {y0, y1, m1, n1});
+    m.mult(new Matrix(curveType));
+    }
   }//coefiecient constructor
 
     /*======== curve type constructor ==========
@@ -49,10 +50,16 @@ public class Matrix {
     this();
     switch (curveType) {
       case HERMITE:
-
+        m.add(new double[] {0, 1, 0, 3});
+        m.add(new double[] {0, 1, 0, 2});
+        m.add(new double[] {0, 1, 1, 1});
+        m.add(new double[] {1, 1, 0, 0});
         break;
       case BEZIER:
-
+        m.add(new double[] {-1, 3, -3, 1});
+        m.add(new double[] {3, -6, 3, 0});
+        m.add(new double[] {-3, 3, 0, 0});
+        m.add(new double[] {1, 0, 0, 0});
         break;
       default:
         throw new RuntimeException("aaaaaaa");
