@@ -11,9 +11,20 @@ public class EdgeMatrix extends Matrix {
       double step
 
       Adds the circle at (cx, cy, cz) with radius r to the calling matrix
-      ====================*/    
-  public void addCricle(double cx, double cy, double cz,
-                        double r, double step) {
+      ====================*/
+  public void addCircle(double cx, double cy, double cz, double r, double step) {
+    step /= r; //something??
+    for (double i = 0; i <= 1; i += step) { //replace with integer comps
+      double n = Math.PI * 2 * i;
+      double _x0 = r * Math.cos(n) + cx;
+      double _y0 = r * Math.sin(n) + cy;
+      double _z0 = cz;
+      i += step;
+      double _x1 = r * Math.cos(n) + cx;
+      double _y1 = r * Math.sin(n) + cy;
+      double _z1 = cz;
+      addEdge(_x0, _y0, _z0, _x1, _y1, _z1);
+    }
   }//addCircle
 
 
@@ -28,7 +39,7 @@ public class EdgeMatrix extends Matrix {
       Adds the curve bounded by the 4 points passsed as parameters
       of type specified in type (see Matrix.java for curve type constants)
       to the calling matrix.
-      ====================*/    
+      ====================*/
   public void addCurve( double x0, double y0,
                          double x1, double y1,
                          double x2, double y2,

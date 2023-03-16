@@ -3,6 +3,8 @@ import java.io.*;
 import java.awt.*;
 
 public class Main {
+  public static final int CIRCLE_RES = 15;
+
   public static void main(String[] args) {
 
     Color c = Color.GREEN;
@@ -13,6 +15,7 @@ public class Main {
     if (args.length == 1) {
       //System.out.println(args[0]);
       try {
+
         gfxParse(new Scanner(new File(args[0])), edges, transform, s, c);
       }
       catch(FileNotFoundException e) {}
@@ -96,8 +99,12 @@ public class Main {
         s.saveExtension(command);
       }//save
 
+      else if (command.equals("circle")) {
+        edges.addCircle(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d);
+      }
+
       else if (command.equals("hermite")) {
-        
+
       }
 
       else if (command.equals("bezier")) {

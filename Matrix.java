@@ -37,8 +37,7 @@ public class Matrix {
     this();
     m.add(new double[] {x0, x1, m0, n0});
     m.add(new double[] {y0, y1, m1, n1});
-    m.mult(new Matrix(curveType));
-    }
+    mult(new Matrix(curveType));
   }//coefiecient constructor
 
     /*======== curve type constructor ==========
