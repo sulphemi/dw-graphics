@@ -59,10 +59,10 @@ public class EdgeMatrix extends Matrix {
     for (double i = 0; i <= 1.0; i += step) {
       double _z = 0;
       double _x0 = a * i * i * i + b * i * i + c * i + d;
-      double _y0 = m * i * i * i + b * i * i + c * i + d;
+      double _y0 = m * i * i * i + n * i * i + o * i + p;
       i += step;
       double _x1 = a * i * i * i + b * i * i + c * i + d;
-      double _y1 = m * i * i * i + b * i * i + c * i + d;
+      double _y1 = m * i * i * i + n * i * i + o * i + p;
       addEdge(_x0, _y0, _z, _x1, _y1, _z);
     }
   }//addCurve
