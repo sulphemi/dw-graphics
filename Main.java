@@ -101,14 +101,17 @@ public class Main {
 
       else if (command.equals("circle")) {
         edges.addCircle(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d);
+        input.nextLine(); //nl
       }
 
       else if (command.equals("hermite")) {
-
+        edges.addCurve(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d, Matrix.HERMITE);
+        input.nextLine();
       }
 
       else if (command.equals("bezier")) {
-
+        edges.addCurve(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d, Matrix.BEZIER);
+        input.nextLine();
       }
 
       else if (command.startsWith("#")) {

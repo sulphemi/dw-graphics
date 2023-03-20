@@ -44,7 +44,27 @@ public class EdgeMatrix extends Matrix {
                          double x1, double y1,
                          double x2, double y2,
                          double x3, double y3,
-                         double step, int curveType ) {
+                         double step, int curveType )
+  {
+    Matrix coeffs = new Matrix(curveType, x0, y0, x1, y1, x2, y2, x3, y3);
+    double a = coeffs.get(0)[0];
+    double b = coeffs.get(0)[1];
+    double c = coeffs.get(0)[2];
+    double d = coeffs.get(0)[3];
+
+    double m = coeffs.get(1)[0];
+    double n = coeffs.get(1)[1];
+    double o = coeffs.get(1)[2];
+    double p = coeffs.get(1)[3];
+    for (double i = 0; i <= 1.0; i += step) {
+      double _z = 0;
+      double _x0 = a * i * i * i + b * i * i + c * i + d;
+      double _y0 = m * i * i * i + b * i * i + c * i + d;
+      i += step;
+      double _x1 = a * i * i * i + b * i * i + c * i + d;
+      double _y1 = m * i * i * i + b * i * i + c * i + d;
+      addEdge(_x0, _y0, _z, _x1, _y1, _z);
+    }
   }//addCurve
 
   public void addEdge(double x0, double y0, double z0,
