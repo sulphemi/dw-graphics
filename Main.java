@@ -133,6 +133,22 @@ public class Main {
         //comment, ignore
         input.nextLine();
       }
+
+      else if (command.equals("torus")) {
+        edges.addTorus(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step3d);
+        input.nextLine();
+      } 
+
+      else if (command.equals("sphere")) {
+        edges.addSphere(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step3d);
+        input.nextLine();
+      }
+
+      else if (command.equals("box")) {
+        edges.addBox(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());
+        input.nextLine();
+      }
+
       else {
         System.out.println("invalid command: " + command);
       }
