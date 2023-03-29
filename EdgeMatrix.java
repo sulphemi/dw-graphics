@@ -11,9 +11,19 @@ public class EdgeMatrix extends Matrix {
   upper-left-front corner is (x, y, z) with width,
   height and depth dimensions.
   ====================*/    
-  public void addBox( double x, double y, double z,
-                       double width, double height, double depth ) {
-
+  public void addBox( double x, double y, double z, double width, double height, double depth ) {
+    addEdge(x, y, z, x + width, y, z); //upper-left-front, rightward
+    addEdge(x, y, z, x, y - height, z); //upper-left-front, downward
+    addEdge(x, y, z, x, y, z - depth); //upper-left-front, backward
+    addEdge(x + width, y - height, z - depth, x, y - height, z - depth); //lower-right-back, leftward
+    addEdge(x + width, y - height, z - depth, x + width, y, z - depth); //lower-right-back, upward
+    addEdge(x + width, y - height, z - depth, x + width, y - height, z); //lower-right-back, forward
+    addEdge(x + width, y, z, x + width, y - height, z); //upper-right-front, downward
+    addEdge(x + width, y - height, z, x, y - height, z); //lower-right-front, leftward
+    addEdge(x + width, y, z - depth, x, y, z - depth); //upper-right-back, leftward
+    addEdge(x + width, y, z - depth, x + width, y, z); //upper-right-back, forward
+    addEdge(x, y - height, z - depth, x, y, z - depth); //lower-left-back, upward
+    addEdge(x, y - height, z - depth, x, y - height, z); //lower-left-back, forward
   }//addBox
 
 
