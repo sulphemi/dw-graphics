@@ -39,8 +39,11 @@ public class EdgeMatrix extends Matrix {
 
   should call generateSphere to create the necessary points
   ====================*/    
-  public void addSphere( double cx, double cy, double cz,
-                         double r, int step ) {
+  public void addSphere(double cx, double cy, double cz, double r, int step) {
+    Matrix pts = generateSphere(cx, cy, cz, r, step);
+    for (double[] d : pts.m) {
+      addEdge(d[0], d[1], d[2], d[0] + 1, d[1] + 1, d[2] + 1);
+    }
 
   }//addSphere
 
@@ -53,10 +56,18 @@ public class EdgeMatrix extends Matrix {
            radius r using step points per circle/semicircle.
            Returns a Matrix of those points
   ====================*/
-  private Matrix generateSphere(double cx, double cy, double cz,
-                                double r, int step ) {
-
+  private Matrix generateSphere(double cx, double cy, double cz, double r, int step) {
     Matrix points = new Matrix();
+    for (int i = 0; i < step; i++) {
+      for (int k = 0; k < step; k++) {
+        double p = (double)i / step * Math.PI * 2;
+        double t = (double)k / step * Math.PI * 2;
+        double x = r * Math.cos(t) + cx;
+        double y = r * Math.sin(t) * Math.cos(p) + cy;
+        double z = r * Math.sin(t) * Math.sin(p) + cz;
+        points.addColumn(x, y, z);
+      }
+    }
     return points;
   }//generateSphere
 
