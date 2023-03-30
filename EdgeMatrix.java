@@ -83,9 +83,11 @@ public class EdgeMatrix extends Matrix {
 
   should call generateTorus to create the necessary points
   ====================*/
-  public void addTorus( double cx, double cy, double cz,
-                        double r0, double r1, int step ) {
-
+  public void addTorus(double cx, double cy, double cz, double r0, double r1, int step) {
+    Matrix pts = generateTorus(cx, cy, cz, r0, r1, step);
+    for (double[] d : pts.m) {
+      addEdge(d[0], d[1], d[2], d[0] + 1, d[1] + 1, d[2] + 1);
+    }
   }//addTorus
 
 /*======== Matrix generateTorus() ==========
