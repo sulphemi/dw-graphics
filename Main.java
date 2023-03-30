@@ -149,6 +149,10 @@ public class Main {
         input.nextLine();
       }
 
+      else if (command.equals("clear")) {
+        edges.clear();
+      }
+
       else {
         System.out.println("invalid command: " + command);
       }
