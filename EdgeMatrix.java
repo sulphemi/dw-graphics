@@ -60,8 +60,8 @@ public class EdgeMatrix extends Matrix {
     Matrix points = new Matrix();
     for (int i = 0; i < step; i++) {
       for (int k = 0; k < step; k++) {
-        double p = (double)i / step * Math.PI * 2;
-        double t = (double)k / step * Math.PI * 2;
+        double p = (double)i / step * Math.PI * 2; //phi for sphere
+        double t = (double)k / step * Math.PI; //theta for semicircle
         double x = r * Math.cos(t) + cx;
         double y = r * Math.sin(t) * Math.cos(p) + cy;
         double z = r * Math.sin(t) * Math.sin(p) + cz;
