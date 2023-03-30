@@ -100,10 +100,18 @@ public class EdgeMatrix extends Matrix {
            step points per circle.
            Returns a matrix of those points
   ====================*/
-  private Matrix generateTorus(double cx, double cy, double cz,
-                               double r0, double r1, int step ) {
-
+  private Matrix generateTorus(double cx, double cy, double cz, double r0, double r1, int step) {
     Matrix points = new Matrix();
+    for (int i = 0; i < step; i++) {
+      for (int k = 0; k < step; k++) {
+        double p = (double)i / step * Math.PI * 2; //phi for rotating circle
+        double t = (double)i / step * Math.PI * 2; //theta for generating circle
+        double x = Math.cos(t) * (r1 * Math.cos(t) + r0) + cx;
+        double y = r1 * Math.sin(t) + cy;
+        double z = -1 * Math.sin(p) * (r1 * Math.cos(t) + r0) + cz;
+        points.addColumn(x, y, z);
+      }
+    }
     return points;
   }//generateTorus
 
