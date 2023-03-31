@@ -2,7 +2,7 @@ import java.util.*;
 import java.awt.*;
 
 public class EdgeMatrix extends Matrix {
-
+  private static final double TWOPI = Math.PI;
 /*======== void addBox() ==========
   Inputs:   double x, double y, double z,
             double width, double height, double depth
@@ -60,7 +60,7 @@ public class EdgeMatrix extends Matrix {
     Matrix points = new Matrix();
     for (int i = 0; i < step; i++) {
       for (int k = 0; k < step; k++) {
-        double p = (double)i / step * Math.PI * 2; //phi for sphere
+        double p = (double)i / step * TWOPI; //phi for sphere
         double t = (double)k / step * Math.PI; //theta for semicircle
         double x = r * Math.cos(t) + cx;
         double y = r * Math.sin(t) * Math.cos(p) + cy;
@@ -104,9 +104,9 @@ public class EdgeMatrix extends Matrix {
     Matrix points = new Matrix();
     for (int i = 0; i < step; i++) {
       for (int k = 0; k < step; k++) {
-        double p = (double)i / step * Math.PI * 2; //phi for rotating circle
-        double t = (double)i / step * Math.PI * 2; //theta for generating circle
-        double x = Math.cos(t) * (r1 * Math.cos(t) + r0) + cx;
+        double p = (double)k / step * TWOPI; //phi for rotating circle
+        double t = (double)i / step * TWOPI; //theta for generating circle
+        double x = Math.cos(p) * (r1 * Math.cos(t) + r0) + cx;
         double y = r1 * Math.sin(t) + cy;
         double z = -1 * Math.sin(p) * (r1 * Math.cos(t) + r0) + cz;
         points.addColumn(x, y, z);
@@ -124,8 +124,8 @@ public class EdgeMatrix extends Matrix {
     for (int i=1; i<step; i++) {
       t = (double)i/step;
 
-      x1 = r * Math.cos(2 * Math.PI * t) + cx;
-      y1 = r * Math.sin(2 * Math.PI * t) + cy;
+      x1 = r * Math.cos(TWOPI * t) + cx;
+      y1 = r * Math.sin(TWOPI * t) + cy;
 
       addEdge(x0, y0, cz, x1, y1, cz);
       x0 = x1;
