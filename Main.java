@@ -35,11 +35,11 @@ public class Main {
     Matrix tmp;
     int curveType;
     int step2d = 10;
-    int step3d = 20;
+    int step3d = 40;
 
     while (input.hasNext()) {
       command = input.next();
-      System.out.println(command);
+      //System.out.println(command);
 
       if (command.equals("line")) {
         xvals[0] = input.nextDouble();

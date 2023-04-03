@@ -158,4 +158,10 @@ public class Matrix {
     }
     return s;
   }
+
+  public void addAllPoints(Matrix other) {
+    for (double[] d : other.m) {
+      m.add(Arrays.copyOf(d, d.length));
+    }
+  }
 }//Matrix

@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.imageio.*;
 */
 public class Screen {
+  boolean empty = true;
 
   public static final int XRES = 500;
   public static final int YRES = 500;
@@ -36,9 +37,11 @@ public class Screen {
     g.fillRect(0, 0, img.getWidth(), img.getHeight());
     g.dispose();
 
+    empty = true;
   }//clearScreen
 
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
+    empty = false;
     int x, y, d, A, B;
     //swap points if going right -> left
     int xt, yt;
@@ -187,6 +190,10 @@ public class Screen {
   }//saveExtension
 
   public void display() {
+    if (empty) {
+      System.out.println("frame empty, not displaying...");
+      return;
+    }
     JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.setSize(img.getWidth(), img.getHeight());

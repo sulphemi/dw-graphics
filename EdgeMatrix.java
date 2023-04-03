@@ -2,7 +2,7 @@ import java.util.*;
 import java.awt.*;
 
 public class EdgeMatrix extends Matrix {
-  private static final double TWOPI = Math.PI;
+  private static final double TWOPI = Math.PI * 2;
 /*======== void addBox() ==========
   Inputs:   double x, double y, double z,
             double width, double height, double depth
@@ -56,7 +56,7 @@ public class EdgeMatrix extends Matrix {
            radius r using step points per circle/semicircle.
            Returns a Matrix of those points
   ====================*/
-  private Matrix generateSphere(double cx, double cy, double cz, double r, int step) {
+  private static Matrix generateSphere(double cx, double cy, double cz, double r, int step) {
     Matrix points = new Matrix();
     for (int i = 0; i < step; i++) {
       for (int k = 0; k < step; k++) {
@@ -100,18 +100,19 @@ public class EdgeMatrix extends Matrix {
            step points per circle.
            Returns a matrix of those points
   ====================*/
-  private Matrix generateTorus(double cx, double cy, double cz, double r0, double r1, int step) {
+  private static Matrix generateTorus(double cx, double cy, double cz, double r0, double r1, int step) {
     Matrix points = new Matrix();
+    EdgeMatrix circle = new EdgeMatrix();
+    circle.addCricle(cx + r1, cy, cz, r0, step);
+    //System.out.println("points in circle: " + circle.m.size());
+    Matrix Y_ROT = new Matrix(Matrix.ROTATE, 1.0 / step * TWOPI, 'Y');
+    //System.out.println("angle of Y_ROT: " + (1.0 / step * TWOPI));
+    points.addAllPoints(circle);
     for (int i = 0; i < step; i++) {
-      for (int k = 0; k < step; k++) {
-        double p = (double)k / step * TWOPI; //phi for rotating circle
-        double t = (double)i / step * TWOPI; //theta for generating circle
-        double x = Math.cos(p) * (r1 * Math.cos(t) + r0) + cx;
-        double y = r1 * Math.sin(t) + cy;
-        double z = -1 * Math.sin(p) * (r1 * Math.cos(t) + r0) + cz;
-        points.addColumn(x, y, z);
-      }
+      circle.mult(Y_ROT);
+      points.addAllPoints(circle);
     }
+    //System.out.println("size of points: " + points.m.size());
     return points;
   }//generateTorus
 
@@ -171,6 +172,8 @@ public class EdgeMatrix extends Matrix {
       System.out.println("Need at least 2 edges to draw a line");
       return;
     }//not enough points
+
+    System.out.println("drawing from " + m.size() + " points...");
 
     for(int point=0; point<m.size()-1; point+=2) {
       double[] p0 = m.get(point);
