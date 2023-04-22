@@ -127,6 +127,8 @@ public class PolygonMatrix extends Matrix {
       double[] p1 = m.get(i + 1);
       double[] p2 = m.get(i + 2);
 
+      if (! Polygon.facingView(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
+
       s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
       s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], c);
       s.drawLine((int)p1[0], (int)p1[1], (int)p2[0], (int)p2[1], c);
