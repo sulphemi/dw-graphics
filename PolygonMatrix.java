@@ -3,8 +3,31 @@ import java.awt.*;
 
 public class PolygonMatrix extends Matrix {
 
+  // x, y, z is UPPER, LEFT, FRONT
   public void addBox( double x, double y, double z, double width, double height, double depth ) {
-    
+    //front facing side
+    addPolygon(x, y, z, x, y - height, z, x + width, y - height, z);
+    addPolygon(x, y, z, x + width, y - height, z, x + width, y, z);
+
+    //left facing side
+    addPolygon(x, y, z, x, y - height, z - depth, x, y - height, z);
+    addPolygon(x, y, z, x, y, z - depth, x, y - height, z - depth);
+
+    //right facing side
+    addPolygon(x + width, y, z, x + width, y - height, z - depth, x + width, y, z - depth);
+    addPolygon(x + width, y, z, x + width, y - height, z, x + width, y - height, z - depth);
+
+    //top facing side
+    addPolygon(x, y, z, x + width, y, z, x, y, z - depth);
+    addPolygon(x + width, y, z, x + width, y, z - depth, x, y, z - depth);
+
+    //bottom facing side
+    addPolygon(x, y - height, z, x + width, y - height, z - depth, x + width, y - height, z);
+    addPolygon(x, y - height, z, x, y - height, z - depth, x + width, y - height, z - depth);
+
+    //back facing side
+    addPolygon(x + width, y - height, z - depth, x, y - height, z - depth, x, y, z - depth);
+    addPolygon(x + width, y - height, z - depth, x, y, z - depth, x + width, y, z - depth);
   }//addBox
 
   public void addSphere( double cx, double cy, double cz,
@@ -100,9 +123,9 @@ public class PolygonMatrix extends Matrix {
     }
 
     for (int i = 0; i < m.size() - 2; i += 3) {
-      double[] p0 = m[i];
-      double[] p1 = m[i + 1];
-      double[] p2 = m[i + 2];
+      double[] p0 = m.get(i);
+      double[] p1 = m.get(i + 1);
+      double[] p2 = m.get(i + 2);
 
       s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
       s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], c);
