@@ -35,15 +35,27 @@ public class PolygonMatrix extends Matrix {
       Matrix pts = generateSphere(cx, cy, cz, r, steps);
       assert steps % 2 == 0;
 
-      int circlects = steps;
-      int circlepts = steps + 1;
+      int circlects = steps; //number of circles
+      int circlepts = steps + 1; //number of points in a circle
 
-      for (int i = 0; i < circlects; i += 2) {
+      for (int i = 0; i < circlects - 2; i += 2) {
         int a = i * circlepts; //index of first point of first semicircle
         int b = i * circlepts + circlepts; //index of first point of second semicircle
         addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
+        for (int k = 1; k < circlepts; k++) {
+          addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k + 1));
+          addFromPts(pts.get(a + k), pts.get(b + k + 1), pts.get(b + k));
+        }
+      }
 
-        //for (int k = 1; k < )
+      { //do it one more time for beginning and end
+        int a = circlepts; //index of first point of first semicircle
+        int b = (circlects - 2) * circlepts; //index of first point of second semicircle
+        addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
+        for (int k = 1; k < circlepts; k++) {
+          addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k + 1));
+          addFromPts(pts.get(a + k), pts.get(b + k + 1), pts.get(b + k));
+        }
       }
   }//addSphere
 
