@@ -38,7 +38,7 @@ public class Polygon {
     return Vector.crossProduct(new Vector(x0, y0, z0, x1, y1, z1), new Vector(x0, y0, z0, x2, y2, z2));
   }
 
-  public static boolean facingView(double x0, double y0, double z0, double x1, double y1, double z1, double x2, double y2, double z2) {
+  public static boolean isVisible(double x0, double y0, double z0, double x1, double y1, double z1, double x2, double y2, double z2) {
     return calcNormal(x0, y0, z0, x1, y1, z1, x2, y2, z2).facingView();
   }
 }

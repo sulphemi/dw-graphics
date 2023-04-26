@@ -32,9 +32,22 @@ public class PolygonMatrix extends Matrix {
 
   public void addSphere( double cx, double cy, double cz,
                          double r, int steps ) {
+      Matrix pts = generateSphere(cx, cy, cz, r, steps);
+      assert steps % 2 == 0;
 
+      int circlects = steps;
+      int circlepts = steps + 1;
+
+      for (int i = 0; i < circlects; i += 2) {
+        int a = i * circlepts; //index of first point of first semicircle
+        int b = i * circlepts + circlepts; //index of first point of second semicircle
+        addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
+
+        //for (int k = 1; k < )
+      }
   }//addSphere
 
+  //sphere is made of 20 (steps) circles with 21 (steps + 1) pts each
   private Matrix generateSphere(double cx, double cy, double cz,
                                 double r, int steps ) {
 
@@ -115,6 +128,12 @@ public class PolygonMatrix extends Matrix {
     m.add(new double[] {x2, y2, z2, 1});
   }//addColumn
 
+  public void addFromPts(double[] p0, double[] p1, double[] p2) {
+    m.add(p0);
+    m.add(p1);
+    m.add(p2);
+  }
+
   public void drawPolygons(Screen s, Color c) {
     assert m.size() % 3 == 0;
     if (m.size() < 3) {
@@ -127,7 +146,7 @@ public class PolygonMatrix extends Matrix {
       double[] p1 = m.get(i + 1);
       double[] p2 = m.get(i + 2);
 
-      if (! Polygon.facingView(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
+      //if (! Polygon.isVisible(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
 
       s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
       s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], c);
