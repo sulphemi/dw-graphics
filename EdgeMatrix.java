@@ -196,7 +196,7 @@ public class EdgeMatrix extends Matrix {
 
   public void drawEdges(Screen s, Color c) {
     if ( m.size() < 2) {
-      System.out.println("Need at least 2 edges to draw a line");
+      //System.out.println("Need at least 2 edges to draw a line");
       return;
     }//not enough points
 
