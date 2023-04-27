@@ -58,10 +58,10 @@ public class PolygonMatrix extends Matrix {
       }
 
       { //do it one more time for end to beginning
-        int a = 0; //index of first point of first semicircle
-        int b = (circlects - 2) * circlepts; //index of first point of second semicircle
-        //addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
-        for (int k = 1; k < circlepts; k++) {
+        int a = (circlects - 1) * circlepts; //index of first point of first semicircle
+        int b = 0; //index of first point of second semicircle
+        addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
+        for (int k = 1; k < circlepts - 1; k++) {
           addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k + 1));
           addFromPts(pts.get(a + k), pts.get(b + k + 1), pts.get(b + k));
         }
