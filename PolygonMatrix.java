@@ -33,25 +33,34 @@ public class PolygonMatrix extends Matrix {
   public void addSphere( double cx, double cy, double cz,
                          double r, int steps ) {
       Matrix pts = generateSphere(cx, cy, cz, r, steps);
-      assert steps % 2 == 0;
+      // assert steps % 2 == 0;
+      // Screen s = new Screen(); //debug
 
       int circlects = steps; //number of circles
       int circlepts = steps + 1; //number of points in a circle
 
-      for (int i = 0; i < circlects - 2; i += 2) {
+      for (int i = 0; i < circlects - 1; i++) {
         int a = i * circlepts; //index of first point of first semicircle
         int b = i * circlepts + circlepts; //index of first point of second semicircle
         addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
-        for (int k = 1; k < circlepts; k++) {
+        for (int k = 1; k < circlepts - 1; k++) {
           addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k + 1));
           addFromPts(pts.get(a + k), pts.get(b + k + 1), pts.get(b + k));
+  
+          // { //debug
+          //   s.clearScreen();
+          //   mult(new Matrix(Matrix.TRANSLATE, 60, 50, 0));
+          //   drawPolygons(s, Color.YELLOW);
+          //   mult(new Matrix(Matrix.TRANSLATE, -60, -50, 0));
+          //   s.display();
+          // }
         }
       }
 
-      { //do it one more time for beginning and end
-        int a = circlepts; //index of first point of first semicircle
+      { //do it one more time for end to beginning
+        int a = 0; //index of first point of first semicircle
         int b = (circlects - 2) * circlepts; //index of first point of second semicircle
-        addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
+        //addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
         for (int k = 1; k < circlepts; k++) {
           addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k + 1));
           addFromPts(pts.get(a + k), pts.get(b + k + 1), pts.get(b + k));
@@ -141,9 +150,9 @@ public class PolygonMatrix extends Matrix {
   }//addColumn
 
   public void addFromPts(double[] p0, double[] p1, double[] p2) {
-    m.add(p0);
-    m.add(p1);
-    m.add(p2);
+    m.add(Arrays.copyOf(p0, 4));
+    m.add(Arrays.copyOf(p1, 4));
+    m.add(Arrays.copyOf(p2, 4));
   }
 
   public void drawPolygons(Screen s, Color c) {
