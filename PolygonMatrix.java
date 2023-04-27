@@ -106,7 +106,19 @@ public class PolygonMatrix extends Matrix {
 
   public void addTorus( double cx, double cy, double cz,
                         double r0, double r1, int steps ) {
+    Matrix pts = generateTorus(cx, cy, cz, r0, r1, steps);
 
+    int circlect = steps;
+    int circlept = steps;
+
+    for (int i = 0; i < circlect - 1; i++) {
+      int a = i * circlept; //index of first point of first circle
+      int b = i * circlept + circlept; //index of first point of second circle
+
+      for (int k = 0; k < circlept; k++) {
+        addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k));
+      }
+    }
   }//addTorus
 
   private Matrix generateTorus(double cx, double cy, double cz, double r0, double r1, int steps ) {
@@ -169,7 +181,7 @@ public class PolygonMatrix extends Matrix {
       double[] p1 = m.get(i + 1);
       double[] p2 = m.get(i + 2);
 
-      if (! Polygon.isVisible(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
+      // if (! Polygon.isVisible(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
 
       s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
       s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], c);
