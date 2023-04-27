@@ -43,7 +43,7 @@ public class PolygonMatrix extends Matrix {
         int a = i * circlepts; //index of first point of first semicircle
         int b = i * circlepts + circlepts; //index of first point of second semicircle
         addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
-        for (int k = 1; k < circlepts - 1; k++) {
+        for (int k = 1; k < circlepts - 2; k++) {
           addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k + 1));
           addFromPts(pts.get(a + k), pts.get(b + k + 1), pts.get(b + k));
   
@@ -55,16 +55,18 @@ public class PolygonMatrix extends Matrix {
           //   s.display();
           // }
         }
+        addFromPts(pts.get(a + circlepts - 2), pts.get(a + circlepts - 1), pts.get(b + circlepts - 2));
       }
 
       { //do it one more time for end to beginning
         int a = (circlects - 1) * circlepts; //index of first point of first semicircle
         int b = 0; //index of first point of second semicircle
         addFromPts(pts.get(a), pts.get(a + 1), pts.get(b + 1));
-        for (int k = 1; k < circlepts - 1; k++) {
+        for (int k = 1; k < circlepts - 2; k++) {
           addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k + 1));
           addFromPts(pts.get(a + k), pts.get(b + k + 1), pts.get(b + k));
         }
+        addFromPts(pts.get(a + circlepts - 2), pts.get(a + circlepts - 1), pts.get(b + circlepts - 2));
       }
   }//addSphere
 
@@ -167,7 +169,7 @@ public class PolygonMatrix extends Matrix {
       double[] p1 = m.get(i + 1);
       double[] p2 = m.get(i + 2);
 
-      //if (! Polygon.isVisible(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
+      if (! Polygon.isVisible(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
 
       s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
       s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], c);
