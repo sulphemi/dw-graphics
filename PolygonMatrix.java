@@ -115,9 +115,26 @@ public class PolygonMatrix extends Matrix {
       int a = i * circlept; //index of first point of first circle
       int b = i * circlept + circlept; //index of first point of second circle
 
-      for (int k = 0; k < circlept; k++) {
-        addFromPts(pts.get(a + k), pts.get(a + k + 1), pts.get(b + k));
+      for (int k = 0; k < circlept - 1; k++) {
+        addFromPts(pts.get(a + k), pts.get(b + k), pts.get(a + k + 1));
+        addFromPts(pts.get(a + k + 1), pts.get(b + k), pts.get(b + k + 1));
       }
+
+      addFromPts(pts.get(a + circlept - 1), pts.get(b + circlept - 1), pts.get(a));
+      addFromPts(pts.get(a), pts.get(b + circlept - 1), pts.get(b));
+    }
+
+    { //one more for end to beginning
+      int a = (circlect - 1) * circlept; //index of first point of first circle
+      int b = 0; //index of first point of second circle
+
+      for (int k = 0; k < circlept - 1; k++) {
+        addFromPts(pts.get(a + k), pts.get(b + k), pts.get(a + k + 1));
+        addFromPts(pts.get(a + k + 1), pts.get(b + k), pts.get(b + k + 1));
+      }
+
+      addFromPts(pts.get(a + circlept - 1), pts.get(b + circlept - 1), pts.get(a));
+      addFromPts(pts.get(a), pts.get(b + circlept - 1), pts.get(b));
     }
   }//addTorus
 
@@ -181,7 +198,7 @@ public class PolygonMatrix extends Matrix {
       double[] p1 = m.get(i + 1);
       double[] p2 = m.get(i + 2);
 
-      // if (! Polygon.isVisible(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
+      if (! Polygon.isVisible(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p2[0], p2[1], p2[2])) continue;
 
       s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
       s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], c);
