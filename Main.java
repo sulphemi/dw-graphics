@@ -3,6 +3,8 @@ import java.io.*;
 import java.awt.*;
 
 public class Main {
+  public static Stack<Matrix> csystems = new Stack<Matrix>();
+
   public static void main(String[] args) {
 
     Color c = Color.GREEN;
@@ -12,24 +14,23 @@ public class Main {
 
     Matrix transform = new Matrix();
     transform.ident();
-    Stack<Matrix> csystems = new Stack<Matrix>();
     csystems.push(transform);
 
     if (args.length == 1) {
       //System.out.println(args[0]);
       try {
-        gfxParse(new Scanner(new File(args[0])), edges, polys, transform, s, c);
+        gfxParse(new Scanner(new File(args[0])), edges, polys, transform, s, c, csystems);
       }
       catch(FileNotFoundException e) {}
     }
     else {
       System.out.println("using system.in");
-      gfxParse(new Scanner(System.in), edges, polys, transform, s, c);
+      gfxParse(new Scanner(System.in), edges, polys, transform, s, c, csystems);
     }
 
   }//main
 
-  public static void gfxParse(Scanner input, EdgeMatrix edges, PolygonMatrix polys, Matrix transform, Screen s, Color c) {
+  public static void gfxParse(Scanner input, EdgeMatrix edges, PolygonMatrix polys, Matrix transform, Screen s, Color c, Stack<Matrix> csystems) {
 
     String command = "";
     double[] xvals = new double[4];
@@ -119,7 +120,8 @@ public class Main {
         yvals[0] = input.nextDouble();
         zvals[0] = input.nextDouble();
         tmp = new Matrix(Matrix.SCALE, xvals[0], yvals[0], zvals[0]);
-	transform.mult(tmp);
+	      tmp.mult(csystems.pop());
+        csystems.push(tmp);
       }//scale
 
       else if (command.equals("move")) {
@@ -127,23 +129,25 @@ public class Main {
         yvals[0] = input.nextDouble();
         zvals[0] = input.nextDouble();
         tmp = new Matrix(Matrix.TRANSLATE, xvals[0], yvals[0], zvals[0]);
-        transform.mult(tmp);
+        tmp.mult(csystems.pop());
+        csystems.push(tmp);
       }//move
 
       else if (command.equals("rotate")) {
         axis = input.next().toUpperCase().charAt(0);
         theta = Math.toRadians(input.nextDouble());
         tmp = new Matrix(Matrix.ROTATE, theta, axis);
-	transform.mult(tmp);
+        tmp.mult(csystems.pop());
+        csystems.push(tmp);
       }//rotate
 
       else if (command.equals("ident")) {
-        transform.ident();
+        csystems.peek().ident();
       }//ident
 
       else if (command.equals("apply")) {
-        edges.mult(transform);
-        polys.mult(transform);
+        edges.mult(csystems.peek());
+        polys.mult(csystems.peek());
       }//apply
 
       else if (command.equals("clear")) {
@@ -165,6 +169,14 @@ public class Main {
         polys.drawPolygons(s, c);
         s.saveExtension(command);
       }//save
+
+      else if (command.equals("push")) {
+        csystems.push(csystems.peek().copy());
+      }
+
+      else if (command.equals("pop")) {
+        csystems.pop();
+      }
       
       else if (command.charAt(0) == '#') {
         //comment, ignore

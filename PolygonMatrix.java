@@ -13,26 +13,34 @@ public class PolygonMatrix extends Matrix {
     z0 = z;
     z1 = z-depth;
 
+    PolygonMatrix tmp = new PolygonMatrix();
+
     //front
-    addPolygon(x, y, z, x1, y1, z, x1, y, z);
-    addPolygon(x, y, z, x, y1, z, x1, y1, z);
+    tmp.addPolygon(x, y, z, x1, y1, z, x1, y, z);
+    tmp.addPolygon(x, y, z, x, y1, z, x1, y1, z);
     //back
-    addPolygon(x1, y, z1, x, y1, z1, x, y, z1);
-    addPolygon(x1, y, z1, x1, y1, z1, x, y1, z1);
+    tmp.addPolygon(x1, y, z1, x, y1, z1, x, y, z1);
+    tmp.addPolygon(x1, y, z1, x1, y1, z1, x, y1, z1);
 
     //right side
-    addPolygon(x1, y, z, x1, y1, z1, x1, y, z1);
-    addPolygon(x1, y, z, x1, y1, z, x1, y1, z1);
+    tmp.addPolygon(x1, y, z, x1, y1, z1, x1, y, z1);
+    tmp.addPolygon(x1, y, z, x1, y1, z, x1, y1, z1);
     //left side
-    addPolygon(x, y, z1, x, y1, z, x, y, z);
-    addPolygon(x, y, z1, x, y1, z1, x, y1, z);
+    tmp.addPolygon(x, y, z1, x, y1, z, x, y, z);
+    tmp.addPolygon(x, y, z1, x, y1, z1, x, y1, z);
 
     //top
-    addPolygon(x, y, z1, x1, y, z, x1, y, z1);
-    addPolygon(x, y, z1, x, y, z, x1, y, z);
+    tmp.addPolygon(x, y, z1, x1, y, z, x1, y, z1);
+    tmp.addPolygon(x, y, z1, x, y, z, x1, y, z);
     //bottom
-    addPolygon(x, y1, z, x1, y1, z1, x1, y1, z);
-    addPolygon(x, y1, z, x, y1, z1, x1, y1, z1);
+    tmp.addPolygon(x, y1, z, x1, y1, z1, x1, y1, z);
+    tmp.addPolygon(x, y1, z, x, y1, z1, x1, y1, z1);
+    
+    tmp.mult(getTop());
+
+    for (double[] d : tmp.m) {
+      this.m.add(d);
+    }
   }//addBox
 
   public void addSphere( double cx, double cy, double cz,
@@ -99,6 +107,7 @@ public class PolygonMatrix extends Matrix {
         points.addColumn(x, y, z);
       }
     }
+    points.mult(getTop());
     return points;
   }//generateSphere
 
@@ -170,6 +179,7 @@ public class PolygonMatrix extends Matrix {
         points.addColumn(x, y, z);
       }
     }
+    points.mult(getTop());
     return points;
   }//generateTorus
 
@@ -205,5 +215,9 @@ public class PolygonMatrix extends Matrix {
       }
     }//draw lines
   }//drawPloygons
+
+  public static Matrix getTop() { //gets the transformation matrix at top of stack
+    return Main.csystems.peek();
+  }
 
 }//class PolygonMatrix
