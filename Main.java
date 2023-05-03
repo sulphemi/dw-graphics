@@ -46,7 +46,7 @@ public class Main {
     
     while (input.hasNext()) {
       command = input.next();
-      System.out.println(command);
+      //System.out.println(command);
 
       if (command.equals("line")) {
         xvals[0] = input.nextDouble();
@@ -142,17 +142,15 @@ public class Main {
       }//rotate
 
       else if (command.equals("ident")) {
-        csystems.peek().ident();
+        System.out.println("unsupported command! " + command);
       }//ident
 
       else if (command.equals("apply")) {
-        edges.mult(csystems.peek());
-        polys.mult(csystems.peek());
+        System.out.println("unsupported command! " + command);
       }//apply
 
       else if (command.equals("clear")) {
-        edges = new EdgeMatrix();
-        polys = new PolygonMatrix();
+        s.clearScreen();
       }//clear edge matrix
 
       else if (command.equals("display")) {
