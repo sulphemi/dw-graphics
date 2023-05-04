@@ -5,10 +5,9 @@ import java.awt.*;
 public class Main {
   public static Stack<Matrix> csystems = new Stack<Matrix>();
   public static Screen s = new Screen();
+  public static Color c = Color.GREEN;
 
   public static void main(String[] args) {
-
-    Color c = Color.GREEN;
     EdgeMatrix edges = new EdgeMatrix();
     PolygonMatrix polys = new PolygonMatrix();
 
