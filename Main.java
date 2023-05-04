@@ -4,11 +4,11 @@ import java.awt.*;
 
 public class Main {
   public static Stack<Matrix> csystems = new Stack<Matrix>();
+  public static Screen s = new Screen();
 
   public static void main(String[] args) {
 
     Color c = Color.GREEN;
-    Screen s = new Screen();
     EdgeMatrix edges = new EdgeMatrix();
     PolygonMatrix polys = new PolygonMatrix();
 
