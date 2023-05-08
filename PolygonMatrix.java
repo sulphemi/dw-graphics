@@ -37,10 +37,7 @@ public class PolygonMatrix extends Matrix {
     tmp.addPolygon(x, y1, z, x, y1, z1, x1, y1, z1);
     
     tmp.mult(getTop());
-
-    for (double[] d : tmp.m) {
-      this.m.add(d);
-    }
+    tmp.drawPolygons(getScreen(), Main.c);
   }//addBox
 
   public void addSphere( double cx, double cy, double cz,
@@ -54,6 +51,8 @@ public class PolygonMatrix extends Matrix {
     longStart = 1;
     longStop = steps;
 
+    PolygonMatrix tmp = new PolygonMatrix();
+
     for ( lat = latStart; lat < latStop; lat++ ) {
       for ( longt = longStart; longt < longStop; longt++ ) {
 
@@ -66,15 +65,17 @@ public class PolygonMatrix extends Matrix {
         double[] point2 = points.get(p2);
         double[] point3 = points.get(p3);
 
-        addPolygon(point0[0], point0[1], point0[2],
+        tmp.addPolygon(point0[0], point0[1], point0[2],
                    point1[0], point1[1], point1[2],
                    point2[0], point2[1], point2[2]);
-        addPolygon(point0[0], point0[1], point0[2],
+        tmp.addPolygon(point0[0], point0[1], point0[2],
                    point2[0], point2[1], point2[2],
                    point3[0], point3[1], point3[2]);
 
       }
     }
+
+    tmp.drawPolygons(getScreen(), Main.c);
   }//addSphere
 
   private Matrix generateSphere(double cx, double cy, double cz,
@@ -147,6 +148,8 @@ public class PolygonMatrix extends Matrix {
 
       }
     }
+    drawPolygons(getScreen(), Main.c);
+    clear();
   }//addTorus
 
   private Matrix generateTorus(double cx, double cy, double cz,
@@ -218,6 +221,10 @@ public class PolygonMatrix extends Matrix {
 
   public static Matrix getTop() { //gets the transformation matrix at top of stack
     return Main.csystems.peek();
+  }
+
+  public static Screen getScreen() { //gets the screen
+    return Main.s;
   }
 
 }//class PolygonMatrix

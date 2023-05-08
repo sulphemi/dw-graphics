@@ -50,6 +50,9 @@ public class EdgeMatrix extends Matrix {
     double[] col1 = {x1, y1, z1, 1};
     m.add(col0);
     m.add(col1);
+    mult(getTop());
+    drawEdges(getScreen(), Main.c);
+    clear();
   }//addColumn
 
   public void drawEdges(Screen s, Color c) {
@@ -64,6 +67,14 @@ public class EdgeMatrix extends Matrix {
       s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
     }//draw lines
   }//drawEdges
+
+  public static Matrix getTop() { //gets the transformation matrix at top of stack
+    return Main.csystems.peek();
+  }
+
+  public static Screen getScreen() { //gets the screen
+    return Main.s;
+  }
 
 
 }//class EdgeMatrix

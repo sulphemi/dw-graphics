@@ -153,17 +153,11 @@ public class Main {
       }//clear edge matrix
 
       else if (command.equals("display")) {
-        s.clearScreen();
-        edges.drawEdges(s, c);
-        polys.drawPolygons(s, c);
         s.display();
       }
 
       else if (command.equals("save")) {
         command = input.next();
-        s.clearScreen();
-        edges.drawEdges(s, c);
-        polys.drawPolygons(s, c);
         s.saveExtension(command);
       }//save
 
