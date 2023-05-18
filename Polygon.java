@@ -87,18 +87,21 @@ public class Polygon {
     //end swap
     
     //draw lines from bottom to mid
-    double delta_X = (getX(mid) - getX(bot)) / (getY(mid) - getY(bot) + 1);
+    double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
+    double delta_X1 = (getX(mid) - getX(bot)) / (getY(mid) - getY(bot) + 1);
     double delta_Y = 1;
-    double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
+    //double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
     
-    double x = getX(bot);
+    double x0 = getX(bot);
+    double x1 = getX(bot);
     double y = getY(bot);
-    double z = getZ(bot);
+    //double z = getZ(bot);
     while (y < getY(mid)) {
-      x += delta_X;
+      x0 += delta_X0;
+      x1 += delta_X1;
       y += delta_Y;
-      z += delta_Z;
-      s.plot(c, (int)x, (int)y, z);
+      //z += delta_Z;
+      s.drawLine((int)x0, (int)y, (int)x1, (int)y, c);
     }
   }
 
