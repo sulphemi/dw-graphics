@@ -58,39 +58,48 @@ public class Polygon {
     double[] bot = p2;
 
     //swap the thingies
-    if (getY(bot) < getY(mid)) {
-        if (getY(top) < getY(bot)) {
-          double[] temp;
-          temp = top;
-          top = bot;
-          bot = temp;
-        } //swap(bot, top);
-    } else {
-      if (getY(mid) < getY(top)) {
-        double[] temp;
-        temp = bot;
-        bot = mid;
-        mid = temp;
-      } //swap(bot, mid);
-      else {
-        double[] temp;
-        temp = bot;
-        bot = top;
-        top = temp;
-      } //swap(bot, top);
-    }
-    if (getY(top) < getY(mid)) {
+    {
       double[] temp;
-      temp = mid;
-      mid = top;
-      top = temp;
-    } //swap(mid, top);
+      if (getY(bot) < getY(mid)) {
+          if (getY(top) < getY(bot)) {
+            temp = top;
+            top = bot;
+            bot = temp;
+          } //swap(bot, top);
+      } else {
+        if (getY(mid) < getY(top)) {
+          temp = bot;
+          bot = mid;
+          mid = temp;
+        } //swap(bot, mid);
+        else {
+          temp = bot;
+          bot = top;
+          top = temp;
+        } //swap(bot, top);
+      }
+      if (getY(top) < getY(mid)) {
+        temp = mid;
+        mid = top;
+        top = temp;
+      } //swap(mid, top);
+    }
     //end swap
     
-    //do stuff i guess
-    System.out.println(Arrays.toString(top));
-    System.out.println(Arrays.toString(mid));
-    System.out.println(Arrays.toString(bot));
+    //draw lines from bottom to mid
+    double delta_X = (getX(mid) - getX(bot)) / (getY(mid) - getY(bot) + 1);
+    double delta_Y = 1;
+    double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
+    
+    double x = getX(bot);
+    double y = getY(bot);
+    double z = getZ(bot);
+    while (y < getY(mid)) {
+      x += delta_X;
+      y += delta_Y;
+      z += delta_Z;
+      s.plot(c, (int)x, (int)y, z);
+    }
   }
 
   public static void main(String[] args) {
