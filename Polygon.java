@@ -87,23 +87,48 @@ public class Polygon {
     //end swap
     
     //draw lines from bottom to mid
-    double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
-    double delta_X1 = (getX(mid) - getX(bot)) / (getY(mid) - getY(bot) + 1);
-    double delta_Y = 1;
-    //double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
-    
-    double x0 = getX(bot);
-    double x1 = getX(bot);
-    double y = getY(bot);
-    //double z = getZ(bot);
-    while (y < getY(top)) {
-      //double z0, z1;
-      //s.drawScanline((int)x0, z0, (int)x1, z1, (int)y, c);
-      s.drawLine((int)x0, (int)y, (int)x1, (int)y, c);
-      x0 += delta_X0;
-      x1 += delta_X1;
-      y += delta_Y;
-      //z += delta_Z;
+    {
+      double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
+      double delta_X1 = (getX(mid) - getX(bot)) / (getY(mid) - getY(bot) + 1);
+      double delta_Y = 1;
+      //double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
+      
+      double x0 = getX(bot);
+      double x1 = getX(bot);
+      double y = getY(bot);
+      //double z = getZ(bot);
+      while (y < getY(mid)) {
+        //double z0, z1;
+        //s.drawScanline((int)x0, z0, (int)x1, z1, (int)y, c);
+        s.drawLine((int)x0, (int)y, (int)x1, (int)y, c);
+        x0 += delta_X0;
+        x1 += delta_X1;
+        y += delta_Y;
+        //z += delta_Z;
+      }
+    }
+
+    //draw lines from mid to top
+    {
+      System.out.println("this part reached");
+      double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
+      double delta_X1 = (getX(top) - getX(mid)) / (getY(top) - getY(mid) + 1);
+      double delta_Y = 1;
+      //double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
+      
+      double x0 = getX(mid);
+      double x1 = getX(mid);
+      double y = getY(mid);
+      //double z = getZ(bot);
+      while (y < getY(top)) {
+        //double z0, z1;
+        //s.drawScanline((int)x0, z0, (int)x1, z1, (int)y, c);
+        s.drawLine((int)x0, (int)y, (int)x1, (int)y, c);
+        x0 += delta_X0;
+        x1 += delta_X1;
+        y += delta_Y;
+        //z += delta_Z;
+      }
     }
   }
 
