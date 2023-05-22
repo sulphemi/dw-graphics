@@ -96,12 +96,14 @@ public class Polygon {
     double x1 = getX(bot);
     double y = getY(bot);
     //double z = getZ(bot);
-    while (y < getY(mid)) {
+    while (y < getY(top)) {
+      //double z0, z1;
+      //s.drawScanline((int)x0, z0, (int)x1, z1, (int)y, c);
+      s.drawLine((int)x0, (int)y, (int)x1, (int)y, c);
       x0 += delta_X0;
       x1 += delta_X1;
       y += delta_Y;
       //z += delta_Z;
-      s.drawLine((int)x0, (int)y, (int)x1, (int)y, c);
     }
   }
 
