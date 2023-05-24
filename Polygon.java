@@ -90,7 +90,6 @@ public class Polygon {
     double x0 = getX(bot);
     double x1 = getX(bot);
     {
-      c = Color.GREEN;
       double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
       double delta_X1 = (getX(mid) - getX(bot)) / (getY(mid) - getY(bot) + 1);
       double delta_Y = 1;
@@ -113,7 +112,6 @@ public class Polygon {
 
     //draw lines from mid to top
     {
-      c = Color.RED;
       double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
       double delta_X1 = (getX(top) - getX(mid)) / (getY(top) - getY(mid) + 1);
       double delta_Y = 1;

@@ -196,19 +196,18 @@ public class PolygonMatrix extends Matrix {
       double[] p1 = m.get(point+1);
       double[] p2 = m.get(point+2);
 
-      int red = (23 * (point/3))%256;
-      int green = (109 * (point/3))%256;
-      int blue = (227 * (point/3))%256;
+      int red = (23 * (point/3))%128 + 128;
+      int green = (109 * (point/3))%128 + 128;
+      int blue = (227 * (point/3))%128 + 128;
       Color c = new Color(red, green, blue);
 
       Polygon tri = new Polygon(p0, p1, p2, c);
 
       if (tri.getNormal()[2] > 0) {
-
         tri.scanlineConvert(s);
-        // s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
-        // s.drawLine((int)p2[0], (int)p2[1], (int)p1[0], (int)p1[1], c);
-        // s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], c);
+        // s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], Color.YELLOW);
+        // s.drawLine((int)p2[0], (int)p2[1], (int)p1[0], (int)p1[1], Color.YELLOW);
+        // s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], Color.YELLOW);
       }
     }//draw lines
   }//drawPloygons
