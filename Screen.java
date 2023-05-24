@@ -59,19 +59,23 @@ public class Screen {
     int x0 = (int)_x0;
     int x1 = (int)_x1;
     int y = (int)_y;
+
+    //swap points if going left to right
+    if (x0 > x1) {
+      int swap = x0;
+      x0 = x1;
+      x1 = swap;
+    }
     
     double delta_x = _x1 - _x0;
     double delta_z = _z1 - _z0;
-    double z_change = delta_x / delta_z;
+    double z_change = delta_z / delta_x;
     double z = _z0;
     for (int i = x0; i <= x1; i++) {
-      //compare point to point in zbuffer
-      if (z > zbuffer[i][y]) {
-        zbuffer[i][y] = z;
-        plot(c, i, y, z);
-      }
+      plot(c, i, y, z);
       z += z_change;
     }
+    //drawLine((int)_x0, (int)_y, (int)_x1, (int)_y, c);
   }
 
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
@@ -169,7 +173,11 @@ public class Screen {
   public void plot(Color c, int x, int y, double z) {
     int newy = width - 1 - y;
     if (x >= 0 && x < width && newy >= 0 && newy < height ) {
-      img.setRGB(x, newy, c.getRGB());
+      //compare to zbuffer
+      if (z > zbuffer[x][y]) {
+        zbuffer[x][y] = z;
+        img.setRGB(x, newy, c.getRGB());
+      }
     }
   }//plot
 
