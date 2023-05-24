@@ -34,6 +34,13 @@ public class Screen {
     g.fillRect(0, 0, img.getWidth(), img.getHeight());
     g.dispose();
 
+    //clear zbuffer
+    for (int i = 0; i < zbuffer.length; i++) {
+      for (int k = 0; k < zbuffer[i].length; k++) {
+        zbuffer[i][k] = Double.NEGATIVE_INFINITY;
+      }
+    }
+
 
   }//clearScreen
 
@@ -48,8 +55,23 @@ public class Screen {
   Draws a horzontal line between (x0, y) and (x1, y)
   Calculates z values across the line for z-buffering.
   ====================*/
-  public void drawScanline(int x0, double z0, int x1, double z1, int y, Color c) {
-
+  public void drawScanline(double _x0, double _z0, double _x1, double _z1, double _y, Color c) {
+    int x0 = (int)_x0;
+    int x1 = (int)_x1;
+    int y = (int)_y;
+    
+    double delta_x = _x1 - _x0;
+    double delta_z = _z1 - _z0;
+    double z_change = delta_x / delta_z;
+    double z = _z0;
+    for (int i = x0; i <= x1; i++) {
+      //compare point to point in zbuffer
+      if (z > zbuffer[i][y]) {
+        zbuffer[i][y] = z;
+        plot(c, i, y, z);
+      }
+      z += z_change;
+    }
   }
 
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
