@@ -174,7 +174,7 @@ public class Screen {
     int newy = width - 1 - y;
     if (x >= 0 && x < width && newy >= 0 && newy < height ) {
       //compare to zbuffer
-      if (z > zbuffer[x][y]) {
+      if ((int)(z * 1000) > (int)(zbuffer[x][y] * 1000)) {
         zbuffer[x][y] = z;
         img.setRGB(x, newy, c.getRGB());
       }
