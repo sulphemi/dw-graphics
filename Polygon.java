@@ -85,16 +85,19 @@ public class Polygon {
       } //swap(mid, top);
     }
     //end swap
-    
+
     //draw lines from bottom to mid
+    double x0 = getX(bot);
+    double x1 = getX(bot);
     {
+      c = Color.GREEN;
       double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
       double delta_X1 = (getX(mid) - getX(bot)) / (getY(mid) - getY(bot) + 1);
       double delta_Y = 1;
       //double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
       
-      double x0 = getX(bot);
-      double x1 = getX(bot);
+      // double x0 = getX(bot);
+      // double x1 = getX(bot);
       double y = getY(bot);
       //double z = getZ(bot);
       while (y < getY(mid)) {
@@ -110,14 +113,13 @@ public class Polygon {
 
     //draw lines from mid to top
     {
-      System.out.println("this part reached");
+      c = Color.RED;
       double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
       double delta_X1 = (getX(top) - getX(mid)) / (getY(top) - getY(mid) + 1);
       double delta_Y = 1;
       //double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
-      
-      double x0 = getX(mid);
-      double x1 = getX(mid);
+
+      x1 = getX(mid);
       double y = getY(mid);
       //double z = getZ(bot);
       while (y < getY(top)) {
