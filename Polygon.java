@@ -89,22 +89,21 @@ public class Polygon {
     //draw lines from bottom to mid
     double x0 = getX(bot);
     double x1 = getX(bot);
+    double z0 = getZ(bot);
+    double z1 = getZ(bot);
     {
       double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
       double delta_X1 = (getX(mid) - getX(bot)) / (getY(mid) - getY(bot) + 1);
+      double delta_Z0 = (getZ(top) - getZ(bot)) / (getY(top) - getY(bot) + 1);
+      double delta_Z1 = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
       double delta_Y = 1;
-      //double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
-      
-      // double x0 = getX(bot);
-      // double x1 = getX(bot);
       double y = getY(bot);
-      //double z = getZ(bot);
       while (y < getY(mid)) {
-        //double z0, z1;
-        //s.drawScanline((int)x0, z0, (int)x1, z1, (int)y, c);
-        s.drawLine((int)x0, (int)y, (int)x1, (int)y, c);
+        s.drawScanline(x0, z0, x1, z1, y, c);
         x0 += delta_X0;
         x1 += delta_X1;
+        z0 += delta_Z0;
+        z1 += delta_Z1;
         y += delta_Y;
         //z += delta_Z;
       }
@@ -114,18 +113,18 @@ public class Polygon {
     {
       double delta_X0 = (getX(top) - getX(bot)) / (getY(top) - getY(bot) + 1);
       double delta_X1 = (getX(top) - getX(mid)) / (getY(top) - getY(mid) + 1);
+      double delta_Z0 = (getZ(top) - getZ(bot)) / (getY(top) - getY(bot) + 1);
+      double delta_Z1 = (getZ(top) - getZ(mid)) / (getY(top) - getY(mid) + 1);
       double delta_Y = 1;
-      //double delta_Z = (getZ(mid) - getZ(bot)) / (getY(mid) - getY(bot) + 1);
-
       x1 = getX(mid);
+      z1 = getZ(mid);
       double y = getY(mid);
-      //double z = getZ(bot);
       while (y < getY(top)) {
-        //double z0, z1;
-        //s.drawScanline((int)x0, z0, (int)x1, z1, (int)y, c);
-        s.drawLine((int)x0, (int)y, (int)x1, (int)y, c);
+        s.drawScanline(x0, z0, x1, z1, y, c);
         x0 += delta_X0;
         x1 += delta_X1;
+        z0 += delta_Z0;
+        z1 += delta_Z1;
         y += delta_Y;
         //z += delta_Z;
       }
