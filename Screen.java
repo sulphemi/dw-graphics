@@ -71,7 +71,7 @@ public class Screen {
     double delta_z = _z1 - _z0;
     double z_change = delta_z / delta_x;
     double z = _z0;
-    for (int i = x0; i <= x1; i++) {
+    for (int i = x0; i <= x1 + 1; i++) {
       plot(c, i, y, z);
       z += z_change;
     }
