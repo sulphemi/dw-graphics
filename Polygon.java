@@ -3,11 +3,10 @@ import java.io.*;
 import java.awt.*;
 
 public class Polygon {
-
-  public double DEFAULT_R_AMBIENT = 0.1;
-  public double DEFAULT_R_SPECULAR = 0.5;
-  public double DEFAULT_R_DIFFUSE = 0.5;
-  public double SPECULAR_EXP = 4;
+  public static final double DEFAULT_R_AMBIENT = 0.1;
+  public static final double DEFAULT_R_SPECULAR = 0.5;
+  public static final double DEFAULT_R_DIFFUSE = 0.5;
+  public static final double SPECULAR_EXP = 4;
 
   private double[] p0;
   private double[] p1;
