@@ -55,14 +55,14 @@ public class Polygon {
     int[] ambient, diffuse, specular, color;
     color = new int[3];
 
-
+    ambient = calculateAmbient(amb);
 
     c = new Color(color[0], color[1], color[2]);
   }//calculteLighting
 
   private int[] calculateAmbient(Color amb) {
     int red, green, blue;
-    return new int[] {red, green, blue};
+    return new int[] {red * rAmbient[0], green * rAmbient[1], blue * rAmbient[2]};
   }//calculateAmbient
 
   private int[] calculateDiffuse(GfxVector lightPos, Color lightColor) {
