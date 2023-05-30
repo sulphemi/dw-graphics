@@ -56,18 +56,24 @@ public class Polygon {
     color = new int[3];
 
     ambient = calculateAmbient(amb);
+    diffuse = calculateDiffuse(lightPos, lightColor);
 
     c = new Color(color[0], color[1], color[2]);
   }//calculteLighting
 
   private int[] calculateAmbient(Color amb) {
-    int red, green, blue;
-    return new int[] {red * rAmbient[0], green * rAmbient[1], blue * rAmbient[2]};
+    return new int[] {
+      (int)(amb.getRed() * rAmbient[0]),
+      (int)(amb.getGreen() * rAmbient[1]),
+      (int)(amb.getBlue() * rAmbient[2])
+    };
   }//calculateAmbient
 
   private int[] calculateDiffuse(GfxVector lightPos, Color lightColor) {
-
-    int red, green, blue;
+    double dot_product = getNormal().dotProduct(lightPos, true);
+    int red = (int)(lightColor.getRed() * rDiffuse[0] * dot_product);
+    int green = (int)(lightColor.getGreen() * rDiffuse[1] * dot_product);
+    int blue = (int)(lightColor.getBlue() * rDiffuse[2] * dot_product);
     return new int[] {red, green, blue};
   }//calculateDiffuse
 
