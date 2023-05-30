@@ -58,15 +58,19 @@ public class Polygon {
     ambient = calculateAmbient(amb);
     diffuse = calculateDiffuse(lightPos, lightColor);
 
-    c = new Color(color[0], color[1], color[2]);
+    c = new Color(
+      ambient[0] + diffuse[0],
+      ambient[1] + diffuse[1],
+      ambient[2] + ambient[2]
+    );
   }//calculteLighting
 
   private int[] calculateAmbient(Color amb) {
-    return new int[] {
+    return colorArray(
       (int)(amb.getRed() * rAmbient[0]),
       (int)(amb.getGreen() * rAmbient[1]),
       (int)(amb.getBlue() * rAmbient[2])
-    };
+    );
   }//calculateAmbient
 
   private int[] calculateDiffuse(GfxVector lightPos, Color lightColor) {
@@ -74,14 +78,28 @@ public class Polygon {
     int red = (int)(lightColor.getRed() * rDiffuse[0] * dot_product);
     int green = (int)(lightColor.getGreen() * rDiffuse[1] * dot_product);
     int blue = (int)(lightColor.getBlue() * rDiffuse[2] * dot_product);
-    return new int[] {red, green, blue};
+    return colorArray(red, green, blue);
   }//calculateDiffuse
 
   private int[] calculateSpecular(GfxVector lightPos, Color lightColor, GfxVector view) {
 
     int red, green, blue;
-    return new int[] {red, green, blue};
+    //return new int[] {red, green, blue};
+    return null;
   }//calculateSpecular
+
+  private void sanitizeColor(int[] color) {
+    for (int i = 0; i < color.length; i++) {
+      if (color[i] > 255) color[i] = 255;
+      if (color[i] < 0) color[i] = 0;
+    }
+  }
+
+  private int[] colorArray(int R, int G, int B) {
+    int[] color = new int[] {R, G, B};
+    sanitizeColor(color);
+    return color;
+  }
 
   public void scanlineConvert(Screen s) {
 
