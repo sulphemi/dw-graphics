@@ -59,9 +59,15 @@ public class Polygon {
     diffuse = calculateDiffuse(lightPos, lightColor);
     specular = calculateSpecular(lightPos, lightColor, view);
 
-    color[0] = ambient[0] + diffuse[0] + specular[0];
-    color[1] = ambient[1] + diffuse[1] + specular[1];
-    color[2] = ambient[2] + ambient[2] + specular[2];
+    //specular = new int[] {0, 0, 0};
+
+    // color[0] = ambient[0] + diffuse[0] + specular[0];
+    // color[1] = ambient[1] + diffuse[1] + specular[1];
+    // color[2] = ambient[2] + ambient[2] + specular[2];
+
+    color[0] = ambient[0] + specular[0];
+    color[1] = ambient[1] + specular[1];
+    color[2] = ambient[2] + specular[2];
 
     sanitizeColor(color);
     c = new Color(color[0], color[1], color[2]);
@@ -87,10 +93,12 @@ public class Polygon {
     GfxVector thingy = getNormal();
     thingy.scalarMultiplty(2 * (getNormal().dotProduct(lightPos, true)));
     thingy.subtract(lightPos);
-    double vector_magic = Math.pow(thingy.dotProduct(view, true), SPECULAR_EXP);
-    int red = (int)(lightColor.getRed() * rSpecular[0] * vector_magic);
-    int green = (int)(lightColor.getGreen() * rSpecular[1] * vector_magic);
-    int blue = (int)(lightColor.getBlue() * rSpecular[2] * vector_magic);
+    double vector_magic_pt1 = thingy.dotProduct(view, true);
+    if (vector_magic_pt1 < 0) return new int[] {0, 0, 0};
+    double vector_magic_pt2 = Math.pow(vector_magic_pt1, SPECULAR_EXP);
+    int red = (int)(lightColor.getRed() * rSpecular[0] * vector_magic_pt2);
+    int green = (int)(lightColor.getGreen() * rSpecular[1] * vector_magic_pt2);
+    int blue = (int)(lightColor.getBlue() * rSpecular[2] * vector_magic_pt2);
     return colorArray(red, green, blue);
   }//calculateSpecular
 
