@@ -57,11 +57,12 @@ public class Polygon {
 
     ambient = calculateAmbient(amb);
     diffuse = calculateDiffuse(lightPos, lightColor);
+    specular = calculateSpecular(lightPos, lightColor, view);
 
     c = new Color(
-      ambient[0] + diffuse[0],
-      ambient[1] + diffuse[1],
-      ambient[2] + ambient[2]
+      ambient[0] + diffuse[0] + specular[0],
+      ambient[1] + diffuse[1] + specular[1],
+      ambient[2] + ambient[2] + specular[2]
     );
   }//calculteLighting
 
@@ -82,10 +83,14 @@ public class Polygon {
   }//calculateDiffuse
 
   private int[] calculateSpecular(GfxVector lightPos, Color lightColor, GfxVector view) {
-
-    int red, green, blue;
-    //return new int[] {red, green, blue};
-    return null;
+    GfxVector thingy = getNormal();
+    thingy.scalarMultiplty(2 * (getNormal().dotProduct(lightPos, true)));
+    thingy.subtract(lightPos);
+    double vector_magic = Math.pow(thingy.dotProduct(view, true), SPECULAR_EXP);
+    int red = (int)(lightColor.getRed() * rSpecular[0] * vector_magic);
+    int green = (int)(lightColor.getGreen() * rSpecular[1] * vector_magic);
+    int blue = (int)(lightColor.getBlue() * rSpecular[2] * vector_magic);
+    return colorArray(red, green, blue);
   }//calculateSpecular
 
   private void sanitizeColor(int[] color) {
