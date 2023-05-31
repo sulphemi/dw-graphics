@@ -59,11 +59,12 @@ public class Polygon {
     diffuse = calculateDiffuse(lightPos, lightColor);
     specular = calculateSpecular(lightPos, lightColor, view);
 
-    c = new Color(
-      ambient[0] + diffuse[0] + specular[0],
-      ambient[1] + diffuse[1] + specular[1],
-      ambient[2] + ambient[2] + specular[2]
-    );
+    color[0] = ambient[0] + diffuse[0] + specular[0];
+    color[1] = ambient[1] + diffuse[1] + specular[1];
+    color[2] = ambient[2] + ambient[2] + specular[2];
+
+    sanitizeColor(color);
+    c = new Color(color[0], color[1], color[2]);
   }//calculteLighting
 
   private int[] calculateAmbient(Color amb) {
