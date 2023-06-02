@@ -61,7 +61,7 @@ public class Polygon {
 
     color[0] = ambient[0] + diffuse[0] + specular[0];
     color[1] = ambient[1] + diffuse[1] + specular[1];
-    color[2] = ambient[2] + ambient[2] + specular[2];
+    color[2] = ambient[2] + diffuse[2] + specular[2];
 
     sanitizeColor(color);
     c = new Color(color[0], color[1], color[2]);
