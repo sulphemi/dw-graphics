@@ -10,6 +10,11 @@ public class Main {
     EdgeMatrix edges = new EdgeMatrix();
     PolygonMatrix polys = new PolygonMatrix();
 
+    GfxVector view = new GfxVector(0, 0, 1);
+    Color ambient = new Color(50, 50, 50);
+    GfxVector lightPos = new GfxVector(0.5, 0.75, 1);
+    Color lightColor = new Color(0, 255, 255);
+
     Matrix transform = new Matrix();
     transform.ident();
     Stack<Matrix> csystems = new Stack<Matrix>();
@@ -18,18 +23,18 @@ public class Main {
     if (args.length == 1) {
       //System.out.println(args[0]);
       try {
-        gfxParse(new Scanner(new File(args[0])), edges, polys, csystems, s, c);
+        gfxParse(new Scanner(new File(args[0])), edges, polys, csystems, s, c, view, ambient, lightPos, lightColor);
       }
       catch(FileNotFoundException e) {}
     }
     else {
       System.out.println("using system.in");
-      gfxParse(new Scanner(System.in), edges, polys, csystems, s, c);
+      gfxParse(new Scanner(System.in), edges, polys, csystems, s, c, view, ambient, lightPos, lightColor);
     }
 
   }//main
 
-  public static void gfxParse(Scanner input, EdgeMatrix edges, PolygonMatrix polys, Stack<Matrix> csystems, Screen s, Color c) {
+  public static void gfxParse(Scanner input, EdgeMatrix edges, PolygonMatrix polys, Stack<Matrix> csystems, Screen s, Color c, GfxVector view, Color ambient, GfxVector lightPos, Color lightColor) {
 
     String command = "";
     double[] xvals = new double[4];
@@ -40,7 +45,7 @@ public class Main {
     Matrix tmp;
     int curveType;
     double step2d = 0.01;
-    int step3d = 20;
+    int step3d = 100;
 
     while (input.hasNext()) {
       command = input.next();
@@ -80,7 +85,7 @@ public class Main {
         polys.addBox(xvals[0], yvals[0], zvals[0],
                      xvals[1], yvals[1], zvals[1]);
         polys.mult(csystems.peek());
-        polys.drawPolygons(s);
+        polys.drawPolygons(s, view, ambient, lightPos, lightColor);
         polys.clear();
       }//line
 
@@ -91,7 +96,7 @@ public class Main {
         r0 = input.nextDouble();
         polys.addSphere(xvals[0], yvals[0], zvals[0], r0, step3d);
         polys.mult(csystems.peek());
-        polys.drawPolygons(s);
+        polys.drawPolygons(s, view, ambient, lightPos, lightColor);
         polys.clear();
       }//sphere
 
@@ -103,7 +108,7 @@ public class Main {
         r1 = input.nextDouble();
         polys.addTorus(xvals[0], yvals[0], zvals[0], r0, r1, step3d);
         polys.mult(csystems.peek());
-        polys.drawPolygons(s);
+        polys.drawPolygons(s, view, ambient, lightPos, lightColor);
         polys.clear();
       }//torus
 

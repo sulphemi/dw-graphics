@@ -185,7 +185,7 @@ public class PolygonMatrix extends Matrix {
     m.add(col2);
   }//addColumn
 
-  public void drawPolygons(Screen s) {
+  public void drawPolygons(Screen s, GfxVector view, Color amb, GfxVector lightPos, Color lightColor) {
     if ( m.size() < 3) {
       System.out.println("Need at least 3 points to draw a polygon");
       return;
@@ -196,18 +196,21 @@ public class PolygonMatrix extends Matrix {
       double[] p1 = m.get(point+1);
       double[] p2 = m.get(point+2);
 
-      int red = (23 * (point/3))%128 + 128;
-      int green = (109 * (point/3))%128 + 128;
-      int blue = (227 * (point/3))%128 + 128;
+      int red = (23 * (point/3))%256;
+      int green = (109 * (point/3))%256;
+      int blue = (227 * (point/3))%256;
       Color c = new Color(red, green, blue);
 
       Polygon tri = new Polygon(p0, p1, p2, c);
+      double dot = tri.getNormal().dotProduct(view, false);
 
-      if (tri.getNormal()[2] > 0) {
+      if (dot > 0) {
+
+        tri.calculteLighting(view, amb, lightPos, lightColor);
         tri.scanlineConvert(s);
-        // s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], Color.YELLOW);
-        // s.drawLine((int)p2[0], (int)p2[1], (int)p1[0], (int)p1[1], Color.YELLOW);
-        // s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], Color.YELLOW);
+        // s.drawLine((int)p0[0], (int)p0[1], (int)p1[0], (int)p1[1], c);
+        // s.drawLine((int)p2[0], (int)p2[1], (int)p1[0], (int)p1[1], c);
+        // s.drawLine((int)p0[0], (int)p0[1], (int)p2[0], (int)p2[1], c);
       }
     }//draw lines
   }//drawPloygons

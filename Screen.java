@@ -34,13 +34,10 @@ public class Screen {
     g.fillRect(0, 0, img.getWidth(), img.getHeight());
     g.dispose();
 
-    //clear zbuffer
-    for (int i = 0; i < zbuffer.length; i++) {
-      for (int k = 0; k < zbuffer[i].length; k++) {
-        zbuffer[i][k] = Double.NEGATIVE_INFINITY;
-      }
+    for (int i=0; i<zbuffer.length; i++) {
+      for(int j=0; j<zbuffer[i].length; j++)
+        zbuffer[i][j] = -1/0.0;
     }
-
 
   }//clearScreen
 
@@ -55,27 +52,29 @@ public class Screen {
   Draws a horzontal line between (x0, y) and (x1, y)
   Calculates z values across the line for z-buffering.
   ====================*/
-  public void drawScanline(double _x0, double _z0, double _x1, double _z1, double _y, Color c) {
-    int x0 = (int)_x0;
-    int x1 = (int)_x1;
-    int y = (int)_y;
+  public void drawScanline(int x0, double z0, int x1, double z1, int y, Color c) {
 
-    //swap points if going left to right
+    int tx;
+    double tz;
+    //swap if needed to assure left->right drawing
     if (x0 > x1) {
-      int swap = x0;
+      tx = x0;
+      tz = z0;
       x0 = x1;
-      x1 = swap;
+      z0 = z1;
+      x1 = tx;
+      z1 = tz;
     }
-    
-    double delta_x = _x1 - _x0;
-    double delta_z = _z1 - _z0;
-    double z_change = delta_z / delta_x;
-    double z = _z0;
-    for (int i = x0; i <= x1 + 1; i++) {
-      plot(c, i, y, z);
-      z += z_change;
+
+    double delta_z;
+    delta_z = (x1 - x0) != 0 ? (z1 - z0) / (x1 - x0 + 1) : 0;
+    int x;
+    double z = z0;
+
+    for(x=x0; x <= x1; x++) {
+      plot(c, x, y, z);
+      z+= delta_z;
     }
-    //drawLine((int)_x0, (int)_y, (int)_x1, (int)_y, c);
   }
 
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
@@ -172,12 +171,10 @@ public class Screen {
 
   public void plot(Color c, int x, int y, double z) {
     int newy = width - 1 - y;
-    if (x >= 0 && x < width && newy >= 0 && newy < height ) {
-      //compare to zbuffer
-      if ((int)(z * 1000) > (int)(zbuffer[x][y] * 1000)) {
-        zbuffer[x][y] = z;
-        img.setRGB(x, newy, c.getRGB());
-      }
+    if (x >= 0 && x < width && newy >= 0 && newy < height &&
+        z > zbuffer[x][newy]) {
+      img.setRGB(x, newy, c.getRGB());
+      zbuffer[x][newy] = z;
     }
   }//plot
 
