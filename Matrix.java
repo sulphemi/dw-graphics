@@ -2,12 +2,12 @@ import java.util.*;
 
 public class Matrix {
 
-  public static final int POINT_SIZE = 4;
-  public static final int TRANSLATE = 0;
-  public static final int SCALE = 1;
-  public static final int ROTATE = 2;
-  public static final int HERMITE = 3;
-  public static final int BEZIER = 4;
+  public static int POINT_SIZE = 4;
+  public static int TRANSLATE = 0;
+  public static int SCALE = 1;
+  public static int ROTATE = 2;
+  public static int HERMITE = 3;
+  public static int BEZIER = 4;
 
   protected ArrayList<double []>m;
 
@@ -23,48 +23,6 @@ public class Matrix {
       makeScale(x, y, z);
   }//translate/scale constructor
 
-/*======== coeficient constructor ==========
-  Inputs:   double p1, double p2,
-            double p3, double p4
-            int type
-
-  Constructs a matrix containing the values for a, b, c and d of the
-  equation at^3 + bt^2 + ct + d for the curve defined by p1, p2, p3 and p4.
-
-  Type determines whether the curve is bezier or hermite.
-  ====================*/
-  Matrix(int curveType, double x0, double y0, double x1, double y1, double m0, double n0, double m1, double n1) {
-    this();
-    m.add(new double[] {x0, x1, m0, m1});
-    m.add(new double[] {y0, y1, n0, n1});
-    mult(new Matrix(curveType));
-  }//coefiecient constructor
-
-    /*======== curve type constructor ==========
-      Creates a 4x4 Matrix that can be used in the curve
-      coeficient constructor. curveType is one of the constants
-      defined above.
-      ====================*/
-  Matrix(int curveType) {
-    this();
-    switch (curveType) {
-      case HERMITE:
-        m.add(new double[] {0, 1, 0, 3});
-        m.add(new double[] {0, 1, 0, 2});
-        m.add(new double[] {0, 1, 1, 1});
-        m.add(new double[] {1, 1, 0, 0});
-        break;
-      case BEZIER:
-        m.add(new double[] {-1, 3, -3, 1});
-        m.add(new double[] {3, -6, 3, 0});
-        m.add(new double[] {-3, 3, 0, 0});
-        m.add(new double[] {1, 0, 0, 0});
-        break;
-      default:
-        throw new RuntimeException("aaaaaaa");
-    }
-  }//translate/scale constructor
-
   Matrix(int transformType, double theta, char axis) {
     ident();
     if (transformType == ROTATE) {
@@ -76,6 +34,39 @@ public class Matrix {
         makeRotZ(theta);
     }
   }//roate constrcutor
+
+  Matrix(int curveType, double p0, double p1, double p2, double p3) {
+    this();
+    Matrix curveMat = new Matrix(curveType);
+    double[] col = {p0, p1, p2, p3};
+    m.add(col);
+
+    mult(curveMat);
+  }//coefiecient constructor
+
+  Matrix(int curveType) {
+    this();
+    if (curveType == HERMITE) {
+      double[] col0 = {2, -3, 0, 1};
+      double[] col1 = {-2, 3, 0, 0};
+      double[] col2 = {1, -2, 1, 0};
+      double[] col3 = {1, -1, 0, 0};
+      m.add(col0);
+      m.add(col1);
+      m.add(col2);
+      m.add(col3);
+    }
+    else if (curveType == BEZIER) {
+      double[] col0 = {-1, 3, -3, 1};
+      double[] col1 = {3, -6, 3, 0};
+      double[] col2 = {-3, 3, 0, 0};
+      double[] col3 = {1, 0, 0, 0};
+      m.add(col0);
+      m.add(col1);
+      m.add(col2);
+      m.add(col3);
+    }
+  }//curve generator constructor
 
   private void makeTranslate(double x, double y, double z){
     double[] lastCol = m.get(3);
@@ -166,5 +157,11 @@ public class Matrix {
       s+= "\n";
     }
     return s;
+  }
+
+  public void addAllPoints(Matrix other) {
+    for (double[] d : other.m) {
+      m.add(Arrays.copyOf(d, d.length));
+    }
   }
 }//Matrix

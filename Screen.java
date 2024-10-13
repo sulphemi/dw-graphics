@@ -4,12 +4,16 @@ import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
 
-
+/*
+import java.util.*;
+import javax.swing.*;
+import javax.imageio.*;
+*/
 public class Screen {
+  boolean empty = true;
 
   public static final int XRES = 500;
   public static final int YRES = 500;
-  public static final int YRES_OFFSET = 40;
   public static final int MAX_COLOR = 255;
   public static final Color DEFAULT_COLOR = new Color(0, 0, 0);
 
@@ -33,9 +37,11 @@ public class Screen {
     g.fillRect(0, 0, img.getWidth(), img.getHeight());
     g.dispose();
 
+    empty = true;
   }//clearScreen
 
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
+    empty = false;
     int x, y, d, A, B;
     //swap points if going right -> left
     int xt, yt;
@@ -184,9 +190,13 @@ public class Screen {
   }//saveExtension
 
   public void display() {
+    if (empty) {
+      System.out.println("frame empty, not displaying...");
+      return;
+    }
     JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.setSize(img.getWidth(), img.getHeight() + YRES_OFFSET);
+    frame.setSize(img.getWidth(), img.getHeight());
 
     ColorModel colorModel = img.getColorModel();
     WritableRaster raster = img.copyData(null);
@@ -200,7 +210,8 @@ public class Screen {
           g.drawImage(cpy, 0, 0, null);
         }
       };
-
+    //img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    //clearScreen();
     frame.add(pane);
     frame.setVisible(true);
   }//display

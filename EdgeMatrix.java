@@ -2,68 +2,160 @@ import java.util.*;
 import java.awt.*;
 
 public class EdgeMatrix extends Matrix {
+  private static final double TWOPI = Math.PI * 2;
+/*======== void addBox() ==========
+  Inputs:   double x, double y, double z,
+            double width, double height, double depth
+
+  add the points for a rectagular prism whose
+  upper-left-front corner is (x, y, z) with width,
+  height and depth dimensions.
+  ====================*/    
+  public void addBox( double x, double y, double z, double width, double height, double depth ) {
+    addEdge(x, y, z, x + width, y, z); //upper-left-front, rightward
+    addEdge(x, y, z, x, y - height, z); //upper-left-front, downward
+    addEdge(x, y, z, x, y, z - depth); //upper-left-front, backward
+    addEdge(x + width, y - height, z - depth, x, y - height, z - depth); //lower-right-back, leftward
+    addEdge(x + width, y - height, z - depth, x + width, y, z - depth); //lower-right-back, upward
+    addEdge(x + width, y - height, z - depth, x + width, y - height, z); //lower-right-back, forward
+    addEdge(x + width, y, z, x + width, y - height, z); //upper-right-front, downward
+    addEdge(x + width, y - height, z, x, y - height, z); //lower-right-front, leftward
+    addEdge(x + width, y, z - depth, x, y, z - depth); //upper-right-back, leftward
+    addEdge(x + width, y, z - depth, x + width, y, z); //upper-right-back, forward
+    addEdge(x, y - height, z - depth, x, y, z - depth); //lower-left-back, upward
+    addEdge(x, y - height, z - depth, x, y - height, z); //lower-left-back, forward
+  }//addBox
 
 
+/*======== void addSphere() ==========
+  Inputs:   double cx, double cy, double cz,
+            double r, int step
 
-    /*======== void add_circle() ==========
-      Inputs:   double cx, double cy, double cz
-      double r
-      double step
+  adds all the points for a sphere with center (cx, cy, cz)
+  and radius r using step points per circle/semicircle.
 
-      Adds the circle at (cx, cy, cz) with radius r to the calling matrix
-      ====================*/
-  public void addCircle(double cx, double cy, double cz, double r, double step) {
-    step /= r; //something??
-    for (double i = 0; i <= 1; i += step) { //replace with integer comps
-      double n = Math.PI * 2 * i;
-      double _x0 = r * Math.cos(n) + cx;
-      double _y0 = r * Math.sin(n) + cy;
-      double _z0 = cz;
-      i += step;
-      double _x1 = r * Math.cos(n) + cx;
-      double _y1 = r * Math.sin(n) + cy;
-      double _z1 = cz;
-      addEdge(_x0, _y0, _z0, _x1, _y1, _z1);
+  Since edges are drawn using 2 points, add each point twice,
+  or add each point and then another point 1 pixel away.
+
+  should call generateSphere to create the necessary points
+  ====================*/    
+  public void addSphere(double cx, double cy, double cz, double r, int step) {
+    Matrix pts = generateSphere(cx, cy, cz, r, step);
+    for (double[] d : pts.m) {
+      addEdge(d[0], d[1], d[2], d[0] + 1, d[1] + 1, d[2] + 1);
+    }
+
+  }//addSphere
+
+ /*======== void generateSphere() ==========
+  Inputs:   double cx, double cy, double cz
+            double r, int step
+	    
+  Returns: Generates all the points along the surface
+           of a sphere with center (cx, cy, cz) and
+           radius r using step points per circle/semicircle.
+           Returns a Matrix of those points
+  ====================*/
+  private static Matrix generateSphere(double cx, double cy, double cz, double r, int step) {
+    Matrix points = new Matrix();
+    for (int i = 0; i < step; i++) {
+      for (int k = 0; k < step; k++) {
+        double p = (double)i / step * TWOPI; //phi for sphere
+        double t = (double)k / step * Math.PI; //theta for semicircle
+        double x = r * Math.cos(t) + cx;
+        double y = r * Math.sin(t) * Math.cos(p) + cy;
+        double z = r * Math.sin(t) * Math.sin(p) + cz;
+        points.addColumn(x, y, z);
+      }
+    }
+    return points;
+  }//generateSphere
+
+    
+/*======== void add_torus() ==========
+  Inputs:   double cx, double cy, double cz,
+            double r1, double r2, double step
+	    
+  Returns:
+
+  adds all the points required for a torus with center (cx, cy, cz),
+  circle radius r1 and torus radius r2 using step points per circle.
+
+  should call generateTorus to create the necessary points
+  ====================*/
+  public void addTorus(double cx, double cy, double cz, double r0, double r1, int step) {
+    Matrix pts = generateTorus(cx, cy, cz, r0, r1, step);
+    for (double[] d : pts.m) {
+      addEdge(d[0], d[1], d[2], d[0] + 1, d[1] + 1, d[2] + 1);
+    }
+  }//addTorus
+
+/*======== Matrix generateTorus() ==========
+  Inputs:   double cx, double cy, double cz,
+            double r, int step
+	    
+  Returns: Generates all the points along the surface
+           of a torus with center (cx, cy, cz),
+           circle radius r1 and torus radius r2 using
+           step points per circle.
+           Returns a matrix of those points
+  ====================*/
+  private static Matrix generateTorus(double cx, double cy, double cz, double r0, double r1, int step) {
+    Matrix points = new Matrix();
+    EdgeMatrix circle = new EdgeMatrix();
+    circle.addCricle(cx + r1, cy, cz, r0, step);
+    //System.out.println("points in circle: " + circle.m.size());
+    Matrix Y_ROT = new Matrix(Matrix.ROTATE, 1.0 / step * TWOPI, 'Y');
+    //System.out.println("angle of Y_ROT: " + (1.0 / step * TWOPI));
+    points.addAllPoints(circle);
+    for (int i = 0; i < step; i++) {
+      circle.mult(Y_ROT);
+      points.addAllPoints(circle);
+    }
+    //System.out.println("size of points: " + points.m.size());
+    return points;
+  }//generateTorus
+
+  public void addCricle(double cx, double cy, double cz,
+                        double r, int step) {
+    double x0, y0, x1, y1, t;
+
+    x0 = r + cx;
+    y0 = cy;
+    for (int i=1; i<step; i++) {
+      t = (double)i/step;
+
+      x1 = r * Math.cos(TWOPI * t) + cx;
+      y1 = r * Math.sin(TWOPI * t) + cy;
+
+      addEdge(x0, y0, cz, x1, y1, cz);
+      x0 = x1;
+      y0 = y1;
     }
   }//addCircle
 
 
-    /*======== void add_curve() ==========
-      Inputs: double x0, double y0,
-              double x1, double y1,
-              double x2, double y2,
-	      double x3, double y3,
-	      double step
-	      int type
-
-      Adds the curve bounded by the 4 points passsed as parameters
-      of type specified in type (see Matrix.java for curve type constants)
-      to the calling matrix.
-      ====================*/
   public void addCurve( double x0, double y0,
                          double x1, double y1,
                          double x2, double y2,
                          double x3, double y3,
-                         double step, int curveType )
-  {
-    Matrix coeffs = new Matrix(curveType, x0, y0, x1, y1, x2, y2, x3, y3);
-    double a = coeffs.get(0)[0];
-    double b = coeffs.get(0)[1];
-    double c = coeffs.get(0)[2];
-    double d = coeffs.get(0)[3];
+                         int step, int curveType ) {
 
-    double m = coeffs.get(1)[0];
-    double n = coeffs.get(1)[1];
-    double o = coeffs.get(1)[2];
-    double p = coeffs.get(1)[3];
-    for (double i = 0; i <= 1.0; i += step) {
-      double _z = 0;
-      double _x0 = a * i * i * i + b * i * i + c * i + d;
-      double _y0 = m * i * i * i + n * i * i + o * i + p;
-      i += step;
-      double _x1 = a * i * i * i + b * i * i + c * i + d;
-      double _y1 = m * i * i * i + n * i * i + o * i + p;
-      addEdge(_x0, _y0, _z, _x1, _y1, _z);
+    double t, x, y;
+    Matrix xcoefs = new Matrix(curveType, x0, x1, x2, x3);
+    Matrix ycoefs = new Matrix(curveType, y0, y1, y2, y3);
+
+    double[] xm = xcoefs.get(0);
+    double[] ym = ycoefs.get(0);
+
+    for (int i=1; i<step; i++) {
+      t = (double)i/step;
+
+      x = xm[0]*t*t*t + xm[1]*t*t+ xm[2]*t + xm[3];
+      y = ym[0]*t*t*t + ym[1]*t*t+ ym[2]*t + ym[3];
+      addEdge(x0, y0, 0, x, y, 0);
+      x0 = x;
+      y0 = y;
     }
   }//addCurve
 
@@ -80,6 +172,8 @@ public class EdgeMatrix extends Matrix {
       System.out.println("Need at least 2 edges to draw a line");
       return;
     }//not enough points
+
+    System.out.println("drawing from " + m.size() + " points...");
 
     for(int point=0; point<m.size()-1; point+=2) {
       double[] p0 = m.get(point);

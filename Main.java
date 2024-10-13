@@ -3,8 +3,6 @@ import java.io.*;
 import java.awt.*;
 
 public class Main {
-  public static final int CIRCLE_RES = 15;
-
   public static void main(String[] args) {
 
     Color c = Color.GREEN;
@@ -15,7 +13,6 @@ public class Main {
     if (args.length == 1) {
       //System.out.println(args[0]);
       try {
-
         gfxParse(new Scanner(new File(args[0])), edges, transform, s, c);
       }
       catch(FileNotFoundException e) {}
@@ -37,11 +34,12 @@ public class Main {
     char axis;
     Matrix tmp;
     int curveType;
-    double step2d = 0.01;
+    int step2d = 10;
+    int step3d = 40;
 
     while (input.hasNext()) {
       command = input.next();
-      System.out.println(command);
+      //System.out.println(command);
 
       if (command.equals("line")) {
         xvals[0] = input.nextDouble();
@@ -54,6 +52,34 @@ public class Main {
         edges.addEdge(xvals[0], yvals[0], zvals[0],
                       xvals[1], yvals[1], zvals[1]);
       }//line
+
+
+      else if (command.equals("circle")) {
+        xvals[0] = input.nextDouble();
+        yvals[0] = input.nextDouble();
+        zvals[0] = input.nextDouble();
+        r0 = input.nextDouble();
+        edges.addCricle(xvals[0], yvals[0], zvals[0], r0, step2d);
+      }//circle
+
+      else if (command.equals("bezier") || command.equals("hermite")) {
+        if (command.equals("bezier"))
+          curveType = Matrix.BEZIER;
+        else
+          curveType = Matrix.HERMITE;
+        xvals[0] = input.nextDouble();
+        yvals[0] = input.nextDouble();
+        xvals[1] = input.nextDouble();
+        yvals[1] = input.nextDouble();
+        xvals[2] = input.nextDouble();
+        yvals[2] = input.nextDouble();
+        xvals[3] = input.nextDouble();
+        yvals[3] = input.nextDouble();
+
+        edges.addCurve(xvals[0], yvals[0], xvals[1], yvals[1],
+                       xvals[2], yvals[2], xvals[3], yvals[3], step2d, curveType);
+
+      }//curve
 
       else if (command.equals("scale")) {
         xvals[0] = input.nextDouble();
@@ -86,6 +112,10 @@ public class Main {
         edges.mult(transform);
       }//apply
 
+      else if (command.equals("clear")) {
+        edges = new EdgeMatrix();
+      }//clear edge matrix
+
       else if (command.equals("display")) {
         s.clearScreen();
         edges.drawEdges(s, c);
@@ -99,23 +129,28 @@ public class Main {
         s.saveExtension(command);
       }//save
 
-      else if (command.equals("circle")) {
-        edges.addCircle(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d);
-        input.nextLine(); //nl
-      }
-
-      else if (command.equals("hermite")) {
-        edges.addCurve(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d, Matrix.HERMITE);
+      else if (command.charAt(0) == '#') {
+        //comment, ignore
         input.nextLine();
       }
 
-      else if (command.equals("bezier")) {
-        edges.addCurve(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d, Matrix.BEZIER);
+      else if (command.equals("torus")) {
+        edges.addTorus(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step3d);
+        input.nextLine();
+      } 
+
+      else if (command.equals("sphere")) {
+        edges.addSphere(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step3d);
         input.nextLine();
       }
 
-      else if (command.startsWith("#")) {
-        //c'est un comment
+      else if (command.equals("box")) {
+        edges.addBox(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());
+        input.nextLine();
+      }
+
+      else if (command.equals("clear")) {
+        edges.clear();
       }
 
       else {
