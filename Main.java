@@ -5,36 +5,57 @@ import java.awt.*;
 public class Main {
   public static void main(String[] args) {
 
-    Screen s = new Screen();
     Color c = Color.GREEN;
+    Screen s = new Screen();
+    EdgeMatrix edges = new EdgeMatrix();
 
-    //octants 1 and 5
-    s.drawLine(0, 0, Screen.XRES-1, Screen.YRES-1, c);
-    s.drawLine(0, 0, Screen.XRES-1, Screen.YRES / 2, c);
-    s.drawLine(Screen.XRES-1, Screen.YRES-1, 0, Screen.YRES / 2, c);
+/*
+    Matrix m2 = new Matrix();
+    m2.addColumn(1, 2, 3);
+    m2.addColumn(4, 5, 6);
+    System.out.println(m2);
 
-    //octants 8 and 4
-    c = Color.CYAN;
-    s.drawLine(0, Screen.YRES-1, Screen.XRES-1, 0, c);
-    s.drawLine(0, Screen.YRES-1, Screen.XRES-1, Screen.YRES/2, c);
-    s.drawLine(Screen.XRES-1, 0, 0, Screen.YRES/2, c);
+    Matrix m1 = new Matrix();
+    m1.ident();
+    System.out.println(m1);
 
-    //octants 2 and 6
-    c = Color.RED;
-    s.drawLine(0, 0, Screen.XRES/2, Screen.YRES-1, c);
-    s.drawLine(Screen.XRES-1, Screen.YRES-1, Screen.XRES/2, 0, c);
+    m2.mult(m1);
+    System.out.println(m2);
 
-    //octants 7 and 3
-    c = Color.MAGENTA;
-    s.drawLine(0, Screen.YRES-1, Screen.XRES/2, 0, c);
-    s.drawLine(Screen.XRES-1, 0, Screen.XRES/2, Screen.YRES-1, c);
+    m1.clear();
+    m1.addColumn(1, 2, 3);
+    m1.addColumn(4, 5, 6);
+    m1.addColumn(7, 8, 9);
+    m1.addColumn(10, 11, 12);
+    System.out.println(m1);
 
-    //horizontal and vertical
-    c = Color.YELLOW;
-    s.drawLine(0, Screen.YRES/2, Screen.XRES-1, Screen.YRES/2, c);
-    s.drawLine(Screen.XRES/2, 0, Screen.XRES/2, Screen.YRES-1, c);
+    m2.mult(m1);
+    System.out.println(m2);
+    */
 
+    Matrix.main(null);
+
+    edges.addEdge(50, 450, 0, 100, 450, 0);
+    edges.addEdge(50, 450, 0, 50, 400, 0);
+    edges.addEdge(100, 450, 0, 100, 400, 0);
+    edges.addEdge(100, 400, 0, 50, 400, 0);
+
+    edges.addEdge(200, 450, 0, 250, 450, 0);
+    edges.addEdge(200, 450, 0, 200, 400, 0);
+    edges.addEdge(250, 450, 0, 250, 400, 0);
+    edges.addEdge(250, 400, 0, 200, 400, 0);
+
+    edges.addEdge(150, 400, 0, 130, 360, 0);
+    edges.addEdge(150, 400, 0, 170, 360, 0);
+    edges.addEdge(130, 360, 0, 170, 360, 0);
+
+    edges.addEdge(100, 340, 0, 200, 340, 0);
+    edges.addEdge(100, 320, 0, 200, 320, 0);
+    edges.addEdge(100, 340, 0, 100, 320, 0);
+    edges.addEdge(200, 340, 0, 200, 320, 0);
+
+    edges.drawEdges(s, c);
     s.display();
-    s.saveExtension("lines.png");
+
   }//main
 }//class Main

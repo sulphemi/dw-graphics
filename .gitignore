@@ -17,9 +17,6 @@ __pycache__
 *.obj
 *.elf
 
-# not classy
-*.class
-
 # Linker output
 *.ilk
 *.map

@@ -4,12 +4,13 @@ import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
 
+
 public class Screen {
 
   public static final int XRES = 500;
   public static final int YRES = 500;
-  public static final int MAX_COLOR = 255;
   public static final int YRES_OFFSET = 40;
+  public static final int MAX_COLOR = 255;
   public static final Color DEFAULT_COLOR = new Color(0, 0, 0);
 
   private int width;
@@ -34,93 +35,96 @@ public class Screen {
 
   }//clearScreen
 
-    /*=============================
-      PUT YOUR LINE ALGORITHM CODE HERE
-      ===========================*/
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
-    System.out.println("drawing " + x0 + " " + y0 + " " + x1 + " " + y1);
-    if (Math.abs(y1 - y0) > Math.abs(x1 - x0)) {
-      //top-heavy slope
-
-      if (y0 > y1) {
-        int xtemp = x0;
-        x0 = x1;
-        x1 = xtemp;
-        int ytemp = y0;
-        y0 = y1;
-        y1 = ytemp;
-      }
-
-      int A = y1 - y0;
-      int B = x0 - x1;
-
-      int d = A + B * 2;
-      int currentX = x0;
-      for (int i = y0; i < y1; i++) {
-        plot(c, currentX, i);
-        if (x1 >= x0) {
-          //positive slope
-          if (d < 0) {
-            currentX++;
-            d += A * 2;
-          }
-        } else {
-          //negative slope
-          if (d > 0) {
-            currentX--;
-            d += A * 2;
-          }
-        }
-        d += B * 2;
-      }
-
-      if (currentX != x1) {
-        System.out.println(c + "didnt draw correctly");
-      }
-    } else {
-      //bottom-heavy slope
-
-      if (x0 > x1) {
-        int xtemp = x0;
-        x0 = x1;
-        x1 = xtemp;
-        int ytemp = y0;
-        y0 = y1;
-        y1 = ytemp;
-      }
-
-      int A = y1 - y0;
-      int B = x0 - x1;
-
-      int d = A * 2 + B;
-      int currentY = y0;
-      for (int i = x0; i < x1; i++) {
-        plot(c, i, currentY);
-        if (y1 >= y0) {
-          //positive slope
-          if (d > 0) {
-            currentY++;
-            d += B * 2;
-          }
-        } else {
-          //negative slope
-          if (d < 0) {
-            currentY--;
-            d += B * 2;
-          }
-        }
-
-        d += A * 2;
-      }
-
-      if (currentY != y1) {
-        System.out.println(c + "didnt draw correctly");
-      }
+    int x, y, d, A, B;
+    //swap points if going right -> left
+    int xt, yt;
+    if (x0 > x1) {
+      xt = x0;
+      yt = y0;
+      x0 = x1;
+      y0 = y1;
+      x1 = xt;
+      y1 = yt;
     }
+
+    x = x0;
+    y = y0;
+    A = 2 * (y1 - y0);
+    B = -2 * (x1 - x0);
+
+    //octants 1 and 8
+    if ( Math.abs(x1 - x0) >= Math.abs(y1 - y0) ) {
+
+      //octant 1
+      if ( A > 0 ) {
+
+        d = A + B/2;
+        while ( x < x1 ) {
+          plot( c, x, y );
+          if ( d > 0 ) {
+            y+= 1;
+            d+= B;
+          }
+          x++;
+          d+= A;
+        } //end octant 1 while
+        plot( c, x1, y1 );
+      } //end octant 1
+
+      //octant 8
+      else {
+        d = A - B/2;
+
+        while ( x < x1 ) {
+          plot( c, x, y );
+          if ( d < 0 ) {
+            y-= 1;
+            d-= B;
+          }
+          x++;
+          d+= A;
+        } //end octant 8 while
+        plot( c, x1, y1 );
+      } //end octant 8
+    }//end octants 1 and 8
+
+    //octants 2 and 7
+    else {
+
+      //octant 2
+      if ( A > 0 ) {
+        d = A/2 + B;
+
+        while ( y < y1 ) {
+          plot( c, x, y );
+          if ( d < 0 ) {
+            x+= 1;
+            d+= A;
+          }
+          y++;
+          d+= B;
+        } //end octant 2 while
+        plot( c, x1, y1 );
+      } //end octant 2
+
+      //octant 7
+      else {
+        d = A/2 - B;
+
+        while ( y > y1 ) {
+          plot( c, x, y );
+          if ( d > 0 ) {
+            x+= 1;
+            d+= A;
+          }
+          y--;
+          d-= B;
+        } //end octant 7 while
+        plot(c, x1, y1 );
+      } //end octant 7
+    }//end octants 2 and 7
   }//drawLine
-
-
-
 
   public void plot(Color c, int x, int y) {
     int newy = width - 1 - y;
@@ -196,7 +200,8 @@ public class Screen {
           g.drawImage(cpy, 0, 0, null);
         }
       };
-
+    //img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    //clearScreen();
     frame.add(pane);
     frame.setVisible(true);
   }//display
