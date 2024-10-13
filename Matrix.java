@@ -1,20 +1,13 @@
-/*==========================================
-  A matrix will be an arraylist of size 4 double arrays.
-  Each array  will represent an [x, y, z, 1] point.
-  For multiplication purposes, consider the rows like so:
-  x0  x1      xn
-  y0  y1      yn
-  z0  z1  ... zn
-  1  1        1
-  ==========================================*/
 import java.util.*;
 
 public class Matrix {
 
-  public static int POINT_SIZE = 4;
-  public static int TRANSLATE = 0;
-  public static int SCALE = 1;
-  public static int ROTATE = 2;
+  public static final int POINT_SIZE = 4;
+  public static final int TRANSLATE = 0;
+  public static final int SCALE = 1;
+  public static final int ROTATE = 2;
+  public static final int HERMITE = 3;
+  public static final int BEZIER = 4;
 
   protected ArrayList<double []>m;
 
@@ -22,26 +15,58 @@ public class Matrix {
     m = new ArrayList<double []>();
   }//constructor
 
-
-  /*========= Transform constructors =================
-    These two constructors will create the appropriate
-    transformation matrix based on the transformation
-    type constants defined above.
-    You may leave theses alone and focus on the various
-    "make" methods below.
-    ================================================*/
   Matrix(int transformType, double x, double y, double z) {
-    this();
-    //ident();
+    ident();
     if (transformType == TRANSLATE)
       makeTranslate(x, y, z);
     else if (transformType == SCALE)
       makeScale(x, y, z);
-  }
-  Matrix(int transformType, char axis, double theta) {
+  }//translate/scale constructor
+
+/*======== coeficient constructor ==========
+  Inputs:   double p1, double p2,
+            double p3, double p4
+            int type
+
+  Constructs a matrix containing the values for a, b, c and d of the
+  equation at^3 + bt^2 + ct + d for the curve defined by p1, p2, p3 and p4.
+
+  Type determines whether the curve is bezier or hermite.
+  ====================*/
+  Matrix(int curveType, double x0, double y0, double x1, double y1, double m0, double n0, double m1, double n1) {
     this();
-    //ident();
-    theta = Math.toRadians(theta);
+    m.add(new double[] {x0, x1, m0, m1});
+    m.add(new double[] {y0, y1, n0, n1});
+    mult(new Matrix(curveType));
+  }//coefiecient constructor
+
+    /*======== curve type constructor ==========
+      Creates a 4x4 Matrix that can be used in the curve
+      coeficient constructor. curveType is one of the constants
+      defined above.
+      ====================*/
+  Matrix(int curveType) {
+    this();
+    switch (curveType) {
+      case HERMITE:
+        m.add(new double[] {0, 1, 0, 3});
+        m.add(new double[] {0, 1, 0, 2});
+        m.add(new double[] {0, 1, 1, 1});
+        m.add(new double[] {1, 1, 0, 0});
+        break;
+      case BEZIER:
+        m.add(new double[] {-1, 3, -3, 1});
+        m.add(new double[] {3, -6, 3, 0});
+        m.add(new double[] {-3, 3, 0, 0});
+        m.add(new double[] {1, 0, 0, 0});
+        break;
+      default:
+        throw new RuntimeException("aaaaaaa");
+    }
+  }//translate/scale constructor
+
+  Matrix(int transformType, double theta, char axis) {
+    ident();
     if (transformType == ROTATE) {
       if (axis == 'X')
         makeRotX(theta);
@@ -49,84 +74,42 @@ public class Matrix {
         makeRotY(theta);
       else if (axis == 'Z')
         makeRotZ(theta);
-      else {
-        ident();
-        System.out.println("not a rotation option: " + axis);
-      }
     }
-  }
+  }//roate constrcutor
 
-  /*======== void makeTranslate() ==========
-    Inputs:  double x, double y, double z
-    Returns:
-    Modifies the calling object to become
-    a translation matrix using x, y, and z as the
-    translation offsets.
-    ====================*/
   private void makeTranslate(double x, double y, double z){
-    m.add(new double[] {1, 0, 0, 0});
-    m.add(new double[] {0, 1, 0, 0});
-    m.add(new double[] {0, 0, 1, 0});
-    m.add(new double[] {x, y, z, 1});
+    double[] lastCol = m.get(3);
+    lastCol[0] = x;
+    lastCol[1] = y;
+    lastCol[2] = z;
   }//makeTranslate
 
-  /*======== void makeScale() ==========
-    Inputs:  double x, double y, double z
-    Returns:
-    Modifies the calling object to become
-    a scale matrix using x, y, and z as the
-    scale factors.
-    ====================*/
   private void makeScale(double x, double y, double z) {
-    m.add(new double[] {x, 0, 0, 0});
-    m.add(new double[] {0, y, 0, 0});
-    m.add(new double[] {0, 0, z, 0});
-    m.add(new double[] {0, 0, 0, 1});
+    m.get(0)[0] = x;
+    m.get(1)[1] = y;
+    m.get(2)[2] = z;
   }//makeScale
 
-  /*======== void  makeRotX() ==========
-    Inputs:  double theta
-    Returns:
-    Modifies the calling object to become
-    a rotation matrix using theta as the angle
-    and x as the axis of rotation.
-    ====================*/
   private void makeRotX(double theta) {
-    m.add(new double[] {1, 0, 0, 0});
-    m.add(new double[] {0, Math.cos(theta), -1 * Math.sin(theta), 0});
-    m.add(new double[] {0, Math.sin(theta), Math.cos(theta), 0});
-    m.add(new double[] {0, 0, 0, 1});
+    m.get(1)[1] = Math.cos(theta);
+    m.get(2)[1] = -1*Math.sin(theta);
+    m.get(1)[2] = Math.sin(theta);
+    m.get(2)[2] = Math.cos(theta);
   }//makeRotX
 
-  /*======== void  makeRotY() ==========
-    Inputs:  double theta
-    Returns:
-    Modifies the calling object to become
-    a rotation matrix using theta as the angle
-    and y as the axis of rotation.
-    ====================*/
   private void makeRotY(double theta) {
-    m.add(new double[] {Math.cos(theta), 0, Math.sin(theta), 0});
-    m.add(new double[] {0, 1, 0, 0});
-    m.add(new double[] {-1 * Math.sin(theta), 0, Math.cos(theta), 0});
-    m.add(new double[] {0, 0, 0, 1});
-  }//makeRotY
+    m.get(0)[0] = Math.cos(theta);
+    m.get(0)[2] = -1*Math.sin(theta);
+    m.get(2)[0] = Math.sin(theta);
+    m.get(2)[2] = Math.cos(theta);
+  }//makeRotX
 
-  /*======== void  makeRotZ() ==========
-    Inputs:  double theta
-    Returns:
-    Modifies the calling object to become
-    a rotation matrix using theta as the angle
-    and z as the axis of rotation.
-    ====================*/
   private void makeRotZ(double theta) {
-    m.add(new double[] {Math.cos(theta), -1 * Math.sin(theta), 0, 0});
-    m.add(new double[] {Math.sin(theta), Math.cos(theta), 0, 0});
-    m.add(new double[] {0, 0, 1, 0});
-    m.add(new double[] {0, 0, 0, 1});
-  }//makeRotZ
-
-
+    m.get(0)[0] = Math.cos(theta);
+    m.get(1)[0] = -1*Math.sin(theta);
+    m.get(0)[1] = Math.sin(theta);
+    m.get(1)[1] = Math.cos(theta);
+  }//makeRotX
 
   public void addColumn(double x, double y, double z) {
     double[] col = {x, y, z, 1};
@@ -165,7 +148,11 @@ public class Matrix {
     m = new ArrayList<double[] >();
   }//clear
 
-  public String _toString() {
+  public double[] get(int i) {
+    return m.get(i);
+  }
+
+  public String toString() {
 
     String s = "";
     if (m.size() == 0) {
@@ -180,27 +167,4 @@ public class Matrix {
     }
     return s;
   }
-
-  public String toString() {
-
-    String s = "";
-    if (m.size() == 0) {
-      return s;
-    }
-
-    for (int i=0; i<POINT_SIZE; i++) {
-      for (double[] p : m) {
-        s+= pad(p[i]) + " ";
-      }
-      s+= "\n";
-    }
-    return s;
-  }
-
-  private static String pad(double n) {
-    String s;
-    for (s = ""+n; s.length()<6; s=" "+s);
-    return s;
-  }
-
 }//Matrix

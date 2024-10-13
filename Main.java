@@ -3,6 +3,8 @@ import java.io.*;
 import java.awt.*;
 
 public class Main {
+  public static final int CIRCLE_RES = 15;
+
   public static void main(String[] args) {
 
     Color c = Color.GREEN;
@@ -13,6 +15,7 @@ public class Main {
     if (args.length == 1) {
       //System.out.println(args[0]);
       try {
+
         gfxParse(new Scanner(new File(args[0])), edges, transform, s, c);
       }
       catch(FileNotFoundException e) {}
@@ -24,98 +27,101 @@ public class Main {
 
   }//main
 
-  /*======== void gfx_parse () ==========
-    Inputs: Scanner input
-            EdgeMatrix edges
-            EdgeMatrix transform,
-            Screen s, Color c
-    Returns:
-
-    Goes through the scanner object and performs all of the actions listed in that file.
-    The file follows the following format:
-    Every command is a single character that takes up a line
-    Any command that requires arguments must have those arguments in the second line.
-    The commands are as follows:
-        line: add a line to the edge matrix -
-        takes 6 arguemnts (x0, y0, z0, x1, y1, z1)
-        ident: set the transform matrix to the identity matrix -
-        scale: create a scale matrix,
-               then multiply the transform matrix by the scale matrix -
-               takes 3 arguments (sx, sy, sz)
-        translate: create a translation matrix,
-               then multiply the transform matrix by the translation matrix -
-               takes 3 arguments (tx, ty, tz)
-        rotate: create a rotation matrix,
-               then multiply the transform matrix by the rotation matrix -
-               takes 2 arguments (axis, theta) axis should be x y or z
-        apply: apply the current transformation matrix to the edge matrix
-        display: clear the screen, then
-               draw the lines of the edge matrix to the screen
-               display the screen
-        save: clear the screen, then
-               draw the lines of the edge matrix to the screen
-               save the screen to a file -
-               takes 1 argument (file name)
-        quit: end parsing
-
-    See the file script for an example of the file format
-  */
   public static void gfxParse(Scanner input, EdgeMatrix edges, Matrix transform, Screen s, Color c) {
 
     String command = "";
-    double[] xvals = new double[3];
-    double[] yvals = new double[3];
-    double[] zvals = new double[3];
-    double theta;
+    double[] xvals = new double[4];
+    double[] yvals = new double[4];
+    double[] zvals = new double[4];
+    double theta, r0, r1;
     char axis;
-    Matrix tmp = null;
+    Matrix tmp;
+    int curveType;
+    double step2d = 0.01;
 
     while (input.hasNext()) {
-      command = input.nextLine();
-      //System.out.println(command);
+      command = input.next();
+      System.out.println(command);
 
-      switch (command) {
-        case "line":
-          edges.addColumn(input.nextDouble(), input.nextDouble(), input.nextDouble());
-          edges.addColumn(input.nextDouble(), input.nextDouble(), input.nextDouble());
-          break;
-        case "display":
-          s.clearScreen();
-          edges.drawEdges(s, new Color(255, 255, 255));
-          s.display();
-          break;
-        case "ident":
-          transform.ident();
-          break;
-        case "move":
-          tmp = new Matrix(Matrix.TRANSLATE, input.nextDouble(), input.nextDouble(), input.nextDouble());
-          transform.mult(tmp);
-          break;
-        case "scale":
-          tmp = new Matrix(Matrix.SCALE, input.nextDouble(), input.nextDouble(), input.nextDouble());
-          transform.mult(tmp);
-          break;
-        case "rotate":
-          tmp = new Matrix(Matrix.ROTATE, input.next().toUpperCase().charAt(0), input.nextDouble());
-          transform.mult(tmp);
-          break;
-        case "apply":
-          edges.mult(transform);
-          transform.ident();
-          break;
-        case "save":
-          s.saveExtension(input.nextLine());
-          break;
-        case "":
-          //scanner left an empty line for us
-          break;
-        default:
-          throw new IllegalArgumentException("waaa command " + command + " not found");
+      if (command.equals("line")) {
+        xvals[0] = input.nextDouble();
+        yvals[0] = input.nextDouble();
+        zvals[0] = input.nextDouble();
+        xvals[1] = input.nextDouble();
+        yvals[1] = input.nextDouble();
+        zvals[1] = input.nextDouble();
+
+        edges.addEdge(xvals[0], yvals[0], zvals[0],
+                      xvals[1], yvals[1], zvals[1]);
+      }//line
+
+      else if (command.equals("scale")) {
+        xvals[0] = input.nextDouble();
+        yvals[0] = input.nextDouble();
+        zvals[0] = input.nextDouble();
+        tmp = new Matrix(Matrix.SCALE, xvals[0], yvals[0], zvals[0]);
+        transform.mult(tmp);
+      }//scale
+
+      else if (command.equals("move")) {
+        xvals[0] = input.nextDouble();
+        yvals[0] = input.nextDouble();
+        zvals[0] = input.nextDouble();
+        tmp = new Matrix(Matrix.TRANSLATE, xvals[0], yvals[0], zvals[0]);
+        transform.mult(tmp);
+      }//move
+
+      else if (command.equals("rotate")) {
+        axis = input.next().toUpperCase().charAt(0);
+        theta = Math.toRadians(input.nextDouble());
+        tmp = new Matrix(Matrix.ROTATE, theta, axis);
+        transform.mult(tmp);
+      }//rotate
+
+      else if (command.equals("ident")) {
+        transform.ident();
+      }//ident
+
+      else if (command.equals("apply")) {
+        edges.mult(transform);
+      }//apply
+
+      else if (command.equals("display")) {
+        s.clearScreen();
+        edges.drawEdges(s, c);
+        s.display();
       }
-      //System.out.println(command);
-      //System.out.println("t:\n" + tmp);
-      //System.out.println("m:\n" + edges);
+
+      else if (command.equals("save")) {
+        command = input.next();
+        s.clearScreen();
+        edges.drawEdges(s, c);
+        s.saveExtension(command);
+      }//save
+
+      else if (command.equals("circle")) {
+        edges.addCircle(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d);
+        input.nextLine(); //nl
+      }
+
+      else if (command.equals("hermite")) {
+        edges.addCurve(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d, Matrix.HERMITE);
+        input.nextLine();
+      }
+
+      else if (command.equals("bezier")) {
+        edges.addCurve(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step2d, Matrix.BEZIER);
+        input.nextLine();
+      }
+
+      else if (command.startsWith("#")) {
+        //c'est un comment
+      }
+
+      else {
+        System.out.println("invalid command: " + command);
+      }
     }//read loop
   }//gfxParse
 
-}//class Main
+}

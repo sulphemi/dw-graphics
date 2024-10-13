@@ -200,8 +200,7 @@ public class Screen {
           g.drawImage(cpy, 0, 0, null);
         }
       };
-    //img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-    //clearScreen();
+
     frame.add(pane);
     frame.setVisible(true);
   }//display
