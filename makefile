@@ -1,5 +1,5 @@
 run: Main.class
-	java Main
+	java Main script
 
 Main.class: Main.java Screen.class Matrix.class EdgeMatrix.class
 	javac Main.java

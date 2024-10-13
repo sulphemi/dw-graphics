@@ -8,54 +8,114 @@ public class Main {
     Color c = Color.GREEN;
     Screen s = new Screen();
     EdgeMatrix edges = new EdgeMatrix();
+    Matrix transform = new Matrix();
 
-/*
-    Matrix m2 = new Matrix();
-    m2.addColumn(1, 2, 3);
-    m2.addColumn(4, 5, 6);
-    System.out.println(m2);
-
-    Matrix m1 = new Matrix();
-    m1.ident();
-    System.out.println(m1);
-
-    m2.mult(m1);
-    System.out.println(m2);
-
-    m1.clear();
-    m1.addColumn(1, 2, 3);
-    m1.addColumn(4, 5, 6);
-    m1.addColumn(7, 8, 9);
-    m1.addColumn(10, 11, 12);
-    System.out.println(m1);
-
-    m2.mult(m1);
-    System.out.println(m2);
-    */
-
-    Matrix.main(null);
-
-    edges.addEdge(50, 450, 0, 100, 450, 0);
-    edges.addEdge(50, 450, 0, 50, 400, 0);
-    edges.addEdge(100, 450, 0, 100, 400, 0);
-    edges.addEdge(100, 400, 0, 50, 400, 0);
-
-    edges.addEdge(200, 450, 0, 250, 450, 0);
-    edges.addEdge(200, 450, 0, 200, 400, 0);
-    edges.addEdge(250, 450, 0, 250, 400, 0);
-    edges.addEdge(250, 400, 0, 200, 400, 0);
-
-    edges.addEdge(150, 400, 0, 130, 360, 0);
-    edges.addEdge(150, 400, 0, 170, 360, 0);
-    edges.addEdge(130, 360, 0, 170, 360, 0);
-
-    edges.addEdge(100, 340, 0, 200, 340, 0);
-    edges.addEdge(100, 320, 0, 200, 320, 0);
-    edges.addEdge(100, 340, 0, 100, 320, 0);
-    edges.addEdge(200, 340, 0, 200, 320, 0);
-
-    edges.drawEdges(s, c);
-    s.display();
+    if (args.length == 1) {
+      //System.out.println(args[0]);
+      try {
+        gfxParse(new Scanner(new File(args[0])), edges, transform, s, c);
+      }
+      catch(FileNotFoundException e) {}
+    }
+    else {
+      System.out.println("using system.in");
+      gfxParse(new Scanner(System.in), edges, transform, s, c);
+    }
 
   }//main
+
+  /*======== void gfx_parse () ==========
+    Inputs: Scanner input
+            EdgeMatrix edges
+            EdgeMatrix transform,
+            Screen s, Color c
+    Returns:
+
+    Goes through the scanner object and performs all of the actions listed in that file.
+    The file follows the following format:
+    Every command is a single character that takes up a line
+    Any command that requires arguments must have those arguments in the second line.
+    The commands are as follows:
+        line: add a line to the edge matrix -
+        takes 6 arguemnts (x0, y0, z0, x1, y1, z1)
+        ident: set the transform matrix to the identity matrix -
+        scale: create a scale matrix,
+               then multiply the transform matrix by the scale matrix -
+               takes 3 arguments (sx, sy, sz)
+        translate: create a translation matrix,
+               then multiply the transform matrix by the translation matrix -
+               takes 3 arguments (tx, ty, tz)
+        rotate: create a rotation matrix,
+               then multiply the transform matrix by the rotation matrix -
+               takes 2 arguments (axis, theta) axis should be x y or z
+        apply: apply the current transformation matrix to the edge matrix
+        display: clear the screen, then
+               draw the lines of the edge matrix to the screen
+               display the screen
+        save: clear the screen, then
+               draw the lines of the edge matrix to the screen
+               save the screen to a file -
+               takes 1 argument (file name)
+        quit: end parsing
+
+    See the file script for an example of the file format
+  */
+  public static void gfxParse(Scanner input, EdgeMatrix edges, Matrix transform, Screen s, Color c) {
+
+    String command = "";
+    double[] xvals = new double[3];
+    double[] yvals = new double[3];
+    double[] zvals = new double[3];
+    double theta;
+    char axis;
+    Matrix tmp = null;
+
+    while (input.hasNext()) {
+      command = input.nextLine();
+      //System.out.println(command);
+
+      switch (command) {
+        case "line":
+          edges.addColumn(input.nextDouble(), input.nextDouble(), input.nextDouble());
+          edges.addColumn(input.nextDouble(), input.nextDouble(), input.nextDouble());
+          break;
+        case "display":
+          s.clearScreen();
+          edges.drawEdges(s, new Color(255, 255, 255));
+          s.display();
+          break;
+        case "ident":
+          transform.ident();
+          break;
+        case "move":
+          tmp = new Matrix(Matrix.TRANSLATE, input.nextDouble(), input.nextDouble(), input.nextDouble());
+          transform.mult(tmp);
+          break;
+        case "scale":
+          tmp = new Matrix(Matrix.SCALE, input.nextDouble(), input.nextDouble(), input.nextDouble());
+          transform.mult(tmp);
+          break;
+        case "rotate":
+          tmp = new Matrix(Matrix.ROTATE, input.next().toUpperCase().charAt(0), input.nextDouble());
+          transform.mult(tmp);
+          break;
+        case "apply":
+          edges.mult(transform);
+          transform.ident();
+          break;
+        case "save":
+          s.saveExtension(input.nextLine());
+          break;
+        case "":
+          //scanner left an empty line for us
+          break;
+        default:
+          throw new IllegalArgumentException("waaa command " + command + " not found");
+      }
+      //System.out.println(command);
+      //System.out.println("t:\n" + tmp);
+      //System.out.println("m:\n" + edges);
+    }//read loop
+  }//gfxParse
+
 }//class Main
