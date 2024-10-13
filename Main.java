@@ -8,23 +8,24 @@ public class Main {
     Color c = Color.GREEN;
     Screen s = new Screen();
     EdgeMatrix edges = new EdgeMatrix();
+    PolygonMatrix polys = new PolygonMatrix();
     Matrix transform = new Matrix();
 
     if (args.length == 1) {
       //System.out.println(args[0]);
       try {
-        gfxParse(new Scanner(new File(args[0])), edges, transform, s, c);
+        gfxParse(new Scanner(new File(args[0])), edges, polys, transform, s, c);
       }
       catch(FileNotFoundException e) {}
     }
     else {
       System.out.println("using system.in");
-      gfxParse(new Scanner(System.in), edges, transform, s, c);
+      gfxParse(new Scanner(System.in), edges, polys, transform, s, c);
     }
 
   }//main
 
-  public static void gfxParse(Scanner input, EdgeMatrix edges, Matrix transform, Screen s, Color c) {
+  public static void gfxParse(Scanner input, EdgeMatrix edges, PolygonMatrix polys, Matrix transform, Screen s, Color c) {
 
     String command = "";
     double[] xvals = new double[4];
@@ -34,12 +35,12 @@ public class Main {
     char axis;
     Matrix tmp;
     int curveType;
-    int step2d = 10;
-    int step3d = 40;
+    double step2d = 0.01;
+    int step3d = 20;
 
     while (input.hasNext()) {
       command = input.next();
-      //System.out.println(command);
+      System.out.println(command);
 
       if (command.equals("line")) {
         xvals[0] = input.nextDouble();
@@ -53,6 +54,34 @@ public class Main {
                       xvals[1], yvals[1], zvals[1]);
       }//line
 
+      else if (command.equals("box")) {
+        xvals[0] = input.nextDouble();
+        yvals[0] = input.nextDouble();
+        zvals[0] = input.nextDouble();
+        xvals[1] = input.nextDouble();
+        yvals[1] = input.nextDouble();
+        zvals[1] = input.nextDouble();
+
+        polys.addBox(xvals[0], yvals[0], zvals[0],
+                     xvals[1], yvals[1], zvals[1]);
+      }//line
+
+      else if (command.equals("sphere")) {
+        xvals[0] = input.nextDouble();
+        yvals[0] = input.nextDouble();
+        zvals[0] = input.nextDouble();
+        r0 = input.nextDouble();
+        polys.addSphere(xvals[0], yvals[0], zvals[0], r0, step3d);
+      }//sphere
+
+      else if (command.equals("torus")) {
+        xvals[0] = input.nextDouble();
+        yvals[0] = input.nextDouble();
+        zvals[0] = input.nextDouble();
+        r0 = input.nextDouble();
+        r1 = input.nextDouble();
+        polys.addTorus(xvals[0], yvals[0], zvals[0], r0, r1, step3d);
+      }//torus
 
       else if (command.equals("circle")) {
         xvals[0] = input.nextDouble();
@@ -110,15 +139,18 @@ public class Main {
 
       else if (command.equals("apply")) {
         edges.mult(transform);
+        polys.mult(transform);
       }//apply
 
       else if (command.equals("clear")) {
         edges = new EdgeMatrix();
+        polys = new PolygonMatrix();
       }//clear edge matrix
 
       else if (command.equals("display")) {
         s.clearScreen();
         edges.drawEdges(s, c);
+        polys.drawPolygons(s, c);
         s.display();
       }
 
@@ -126,6 +158,7 @@ public class Main {
         command = input.next();
         s.clearScreen();
         edges.drawEdges(s, c);
+        polys.drawPolygons(s, c);
         s.saveExtension(command);
       }//save
 
@@ -133,26 +166,6 @@ public class Main {
         //comment, ignore
         input.nextLine();
       }
-
-      else if (command.equals("torus")) {
-        edges.addTorus(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step3d);
-        input.nextLine();
-      } 
-
-      else if (command.equals("sphere")) {
-        edges.addSphere(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), step3d);
-        input.nextLine();
-      }
-
-      else if (command.equals("box")) {
-        edges.addBox(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());
-        input.nextLine();
-      }
-
-      else if (command.equals("clear")) {
-        edges.clear();
-      }
-
       else {
         System.out.println("invalid command: " + command);
       }

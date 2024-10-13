@@ -1,1 +1,1 @@
-# gfx-05-3d
+# gfx-06-polygons

@@ -2,131 +2,159 @@ import java.util.*;
 import java.awt.*;
 
 public class EdgeMatrix extends Matrix {
-  private static final double TWOPI = Math.PI * 2;
-/*======== void addBox() ==========
-  Inputs:   double x, double y, double z,
-            double width, double height, double depth
 
-  add the points for a rectagular prism whose
-  upper-left-front corner is (x, y, z) with width,
-  height and depth dimensions.
-  ====================*/    
-  public void addBox( double x, double y, double z, double width, double height, double depth ) {
-    addEdge(x, y, z, x + width, y, z); //upper-left-front, rightward
-    addEdge(x, y, z, x, y - height, z); //upper-left-front, downward
-    addEdge(x, y, z, x, y, z - depth); //upper-left-front, backward
-    addEdge(x + width, y - height, z - depth, x, y - height, z - depth); //lower-right-back, leftward
-    addEdge(x + width, y - height, z - depth, x + width, y, z - depth); //lower-right-back, upward
-    addEdge(x + width, y - height, z - depth, x + width, y - height, z); //lower-right-back, forward
-    addEdge(x + width, y, z, x + width, y - height, z); //upper-right-front, downward
-    addEdge(x + width, y - height, z, x, y - height, z); //lower-right-front, leftward
-    addEdge(x + width, y, z - depth, x, y, z - depth); //upper-right-back, leftward
-    addEdge(x + width, y, z - depth, x + width, y, z); //upper-right-back, forward
-    addEdge(x, y - height, z - depth, x, y, z - depth); //lower-left-back, upward
-    addEdge(x, y - height, z - depth, x, y - height, z); //lower-left-back, forward
+  public void addBox( double x, double y, double z,
+                       double width, double height, double depth ) {
+    double x0, y0, z0, x1, y1, z1;
+    x0 = x;
+    x1 = x+width;
+    y0 = y;
+    y1 = y-height;
+    z0 = z;
+    z1 = z-depth;
+
+    //front
+    addEdge(x0, y0, z0, x1, y0, z0);
+    addEdge(x1, y0, z0, x1, y1, z0);
+    addEdge(x1, y1, z0, x0, y1, z0);
+    addEdge(x0, y1, z0, x0, y0, z0);
+
+    //back
+    addEdge(x0, y0, z1, x1, y0, z1);
+    addEdge(x1, y0, z1, x1, y1, z1);
+    addEdge(x1, y1, z1, x0, y1, z1);
+    addEdge(x0, y1, z1, x0, y0, z1);
+
+    //sides
+    addEdge(x0, y0, z0, x0, y0, z1);
+    addEdge(x1, y0, z0, x1, y0, z1);
+    addEdge(x1, y1, z0, x1, y1, z1);
+    addEdge(x0, y1, z0, x0, y1, z1);
   }//addBox
 
+  public void addSphere( double cx, double cy, double cz,
+                         double r, int step ) {
 
-/*======== void addSphere() ==========
-  Inputs:   double cx, double cy, double cz,
-            double r, int step
+    Matrix points = generateSphere(cx, cy, cz, r, step);
+    int index, lat, longt;
+    int latStop, longStop, latStart, longStart;
+    latStart = 0;
+    latStop = step;
+    longStart = 0;
+    longStop = step;
 
-  adds all the points for a sphere with center (cx, cy, cz)
-  and radius r using step points per circle/semicircle.
+    step++;
+    for ( lat = latStart; lat < latStop; lat++ ) {
+      for ( longt = longStart; longt <= longStop; longt++ ) {
 
-  Since edges are drawn using 2 points, add each point twice,
-  or add each point and then another point 1 pixel away.
+        index = lat * (step) + longt;
+        double[] point = points.get(index);
 
-  should call generateSphere to create the necessary points
-  ====================*/    
-  public void addSphere(double cx, double cy, double cz, double r, int step) {
-    Matrix pts = generateSphere(cx, cy, cz, r, step);
-    for (double[] d : pts.m) {
-      addEdge(d[0], d[1], d[2], d[0] + 1, d[1] + 1, d[2] + 1);
+        addEdge( point[0], point[1], point[2],
+                 point[0]+1, point[1]+1, point[2]+1);
+      }
     }
-
   }//addSphere
 
- /*======== void generateSphere() ==========
-  Inputs:   double cx, double cy, double cz
-            double r, int step
-	    
-  Returns: Generates all the points along the surface
-           of a sphere with center (cx, cy, cz) and
-           radius r using step points per circle/semicircle.
-           Returns a Matrix of those points
-  ====================*/
-  private static Matrix generateSphere(double cx, double cy, double cz, double r, int step) {
+  private Matrix generateSphere(double cx, double cy, double cz,
+                                double r, int step ) {
+
     Matrix points = new Matrix();
-    for (int i = 0; i < step; i++) {
-      for (int k = 0; k < step; k++) {
-        double p = (double)i / step * TWOPI; //phi for sphere
-        double t = (double)k / step * Math.PI; //theta for semicircle
-        double x = r * Math.cos(t) + cx;
-        double y = r * Math.sin(t) * Math.cos(p) + cy;
-        double z = r * Math.sin(t) * Math.sin(p) + cz;
+    int circle, rotation, rot_start, rot_stop, circ_start, circ_stop;
+    double x, y, z, rot, circ;
+
+    rot_start = 0;
+    rot_stop = step;
+    circ_start = 0;
+    circ_stop = step;
+
+    for (rotation = rot_start; rotation < rot_stop; rotation++) {
+      rot = (double)rotation / step;
+
+      for(circle = circ_start; circle <= circ_stop; circle++){
+        circ = (double)circle / step;
+
+        x = r * Math.cos(Math.PI * circ) + cx;
+        y = r * Math.sin(Math.PI * circ) *
+          Math.cos(2*Math.PI * rot) + cy;
+        z = r * Math.sin(Math.PI * circ) *
+          Math.sin(2*Math.PI * rot) + cz;
+
+        /* printf("rotation: %d\tcircle: %d\n", rotation, circle); */
+        /* printf("rot: %lf\tcirc: %lf\n", rot, circ); */
+        /* printf("sphere point: (%0.2f, %0.2f, %0.2f)\n\n", x, y, z); */
         points.addColumn(x, y, z);
       }
     }
     return points;
   }//generateSphere
 
-    
-/*======== void add_torus() ==========
-  Inputs:   double cx, double cy, double cz,
-            double r1, double r2, double step
-	    
-  Returns:
+  public void addTorus( double cx, double cy, double cz,
+                        double r0, double r1, int step ) {
 
-  adds all the points required for a torus with center (cx, cy, cz),
-  circle radius r1 and torus radius r2 using step points per circle.
+    Matrix points = generateTorus(cx, cy, cz, r0, r1, step);
+    int index, lat, longt;
+    int latStop, longStop, latStart, longStart;
+    latStart = 0;
+    latStop = step;
+    longStart = 0;
+    longStop = step;
 
-  should call generateTorus to create the necessary points
-  ====================*/
-  public void addTorus(double cx, double cy, double cz, double r0, double r1, int step) {
-    Matrix pts = generateTorus(cx, cy, cz, r0, r1, step);
-    for (double[] d : pts.m) {
-      addEdge(d[0], d[1], d[2], d[0] + 1, d[1] + 1, d[2] + 1);
+    for ( lat = latStart; lat < latStop; lat++ ) {
+      for ( longt = longStart; longt < longStop; longt++ ) {
+
+        index = lat * (step) + longt;
+        double[] point = points.get(index);
+
+        addEdge( point[0], point[1], point[2],
+                 point[0]+1, point[1]+1, point[2]+1);
+      }
     }
   }//addTorus
 
-/*======== Matrix generateTorus() ==========
-  Inputs:   double cx, double cy, double cz,
-            double r, int step
-	    
-  Returns: Generates all the points along the surface
-           of a torus with center (cx, cy, cz),
-           circle radius r1 and torus radius r2 using
-           step points per circle.
-           Returns a matrix of those points
-  ====================*/
-  private static Matrix generateTorus(double cx, double cy, double cz, double r0, double r1, int step) {
+  private Matrix generateTorus(double cx, double cy, double cz,
+                               double r0, double r1, int step ) {
+
     Matrix points = new Matrix();
-    EdgeMatrix circle = new EdgeMatrix();
-    circle.addCricle(cx + r1, cy, cz, r0, step);
-    //System.out.println("points in circle: " + circle.m.size());
-    Matrix Y_ROT = new Matrix(Matrix.ROTATE, 1.0 / step * TWOPI, 'Y');
-    //System.out.println("angle of Y_ROT: " + (1.0 / step * TWOPI));
-    points.addAllPoints(circle);
-    for (int i = 0; i < step; i++) {
-      circle.mult(Y_ROT);
-      points.addAllPoints(circle);
+    int circle, rotation, rot_start, rot_stop, circ_start, circ_stop;
+    double x, y, z, rot, circ;
+
+    rot_start = 0;
+    rot_stop = step;
+    circ_start = 0;
+    circ_stop = step;
+
+    for (rotation = rot_start; rotation < rot_stop; rotation++) {
+      rot = (double)rotation / step;
+
+      for(circle = circ_start; circle < circ_stop; circle++){
+        circ = (double)circle / step;
+
+        x = Math.cos(2*Math.PI * rot) *
+          (r0 * Math.cos(2*Math.PI * circ) + r1) + cx;
+        y = r0 * Math.sin(2*Math.PI * circ) + cy;
+        z = -1*Math.sin(2*Math.PI * rot) *
+          (r0 * Math.cos(2*Math.PI * circ) + r1) + cz;
+
+        /* printf("rotation: %d\tcircle: %d\n", rotation, circle); */
+        /* printf("rot: %lf\tcirc: %lf\n", rot, circ); */
+        /* printf("sphere point: (%0.2f, %0.2f, %0.2f)\n\n", x, y, z); */
+        points.addColumn(x, y, z);
+      }
     }
-    //System.out.println("size of points: " + points.m.size());
     return points;
   }//generateTorus
 
   public void addCricle(double cx, double cy, double cz,
-                        double r, int step) {
+                        double r, double step) {
     double x0, y0, x1, y1, t;
 
     x0 = r + cx;
     y0 = cy;
-    for (int i=1; i<step; i++) {
-      t = (double)i/step;
+    for (t=step; t <= 1.00001; t+= step) {
 
-      x1 = r * Math.cos(TWOPI * t) + cx;
-      y1 = r * Math.sin(TWOPI * t) + cy;
+      x1 = r * Math.cos(2 * Math.PI * t) + cx;
+      y1 = r * Math.sin(2 * Math.PI * t) + cy;
 
       addEdge(x0, y0, cz, x1, y1, cz);
       x0 = x1;
@@ -139,7 +167,7 @@ public class EdgeMatrix extends Matrix {
                          double x1, double y1,
                          double x2, double y2,
                          double x3, double y3,
-                         int step, int curveType ) {
+                         double step, int curveType ) {
 
     double t, x, y;
     Matrix xcoefs = new Matrix(curveType, x0, x1, x2, x3);
@@ -148,8 +176,7 @@ public class EdgeMatrix extends Matrix {
     double[] xm = xcoefs.get(0);
     double[] ym = ycoefs.get(0);
 
-    for (int i=1; i<step; i++) {
-      t = (double)i/step;
+    for (t=step; t <= 1.000001; t+= step) {
 
       x = xm[0]*t*t*t + xm[1]*t*t+ xm[2]*t + xm[3];
       y = ym[0]*t*t*t + ym[1]*t*t+ ym[2]*t + ym[3];
@@ -169,11 +196,9 @@ public class EdgeMatrix extends Matrix {
 
   public void drawEdges(Screen s, Color c) {
     if ( m.size() < 2) {
-      System.out.println("Need at least 2 edges to draw a line");
+      //System.out.println("Need at least 2 edges to draw a line");
       return;
     }//not enough points
-
-    System.out.println("drawing from " + m.size() + " points...");
 
     for(int point=0; point<m.size()-1; point+=2) {
       double[] p0 = m.get(point);

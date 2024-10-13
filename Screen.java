@@ -1,26 +1,28 @@
 import java.awt.image.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
 
-/*
-import java.util.*;
-import javax.swing.*;
-import javax.imageio.*;
-*/
+
 public class Screen {
-  boolean empty = true;
 
   public static final int XRES = 500;
   public static final int YRES = 500;
+  public static final int YRES_OFFSET = 70;
   public static final int MAX_COLOR = 255;
   public static final Color DEFAULT_COLOR = new Color(0, 0, 0);
 
   private int width;
   private int height;
 
+  private int lineCt = 0;
+  private int windowCt = 0;
+
   private BufferedImage img;
+  private JFrame frame;
+  private volatile boolean stupidWayToBlockWhenICouldHaveUsedListenersAndNotWastedHoweverManyCPUCycles = true;
 
   public Screen() {
     width = XRES;
@@ -28,6 +30,23 @@ public class Screen {
 
     img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     clearScreen();
+
+    frame = new JFrame();
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    frame.setSize(img.getWidth(), img.getHeight() + YRES_OFFSET);
+    frame.setTitle("why are jframes so hard QwQ");
+
+    JButton button = new JButton("next image! (hopefully)");
+    button.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        stupidWayToBlockWhenICouldHaveUsedListenersAndNotWastedHoweverManyCPUCycles = false;
+      }
+    });
+    button.setSize(img.getWidth(), YRES_OFFSET);
+    button.setBounds(0, img.getHeight(), img.getWidth(), 50);
+
+    frame.add(button);
   }//constructor
 
   public void clearScreen() {
@@ -37,11 +56,10 @@ public class Screen {
     g.fillRect(0, 0, img.getWidth(), img.getHeight());
     g.dispose();
 
-    empty = true;
+    lineCt = 0;
   }//clearScreen
 
   public void drawLine(int x0, int y0, int x1, int y1, Color c) {
-    empty = false;
     int x, y, d, A, B;
     //swap points if going right -> left
     int xt, yt;
@@ -130,6 +148,8 @@ public class Screen {
         plot(c, x1, y1 );
       } //end octant 7
     }//end octants 2 and 7
+
+    lineCt++;
   }//drawLine
 
   public void plot(Color c, int x, int y) {
@@ -190,13 +210,12 @@ public class Screen {
   }//saveExtension
 
   public void display() {
-    if (empty) {
-      System.out.println("frame empty, not displaying...");
+    stupidWayToBlockWhenICouldHaveUsedListenersAndNotWastedHoweverManyCPUCycles = true;
+
+    if (lineCt == 0) {
+      System.out.println("[screen] no lines in image, skipping...");
       return;
     }
-    JFrame frame = new JFrame();
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.setSize(img.getWidth(), img.getHeight());
 
     ColorModel colorModel = img.getColorModel();
     WritableRaster raster = img.copyData(null);
@@ -213,7 +232,10 @@ public class Screen {
     //img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     //clearScreen();
     frame.add(pane);
+
     frame.setVisible(true);
+    
+    while (stupidWayToBlockWhenICouldHaveUsedListenersAndNotWastedHoweverManyCPUCycles);
   }//display
 
 }//class Screen
